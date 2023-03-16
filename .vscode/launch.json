@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "2.0.0",
+    "configurations": [
+
+        {
+            "name": "Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/practica1",
+            "cwd": "${workspaceRoot}",
+            "args": ["mapas/mapa30.map", "1", "3", "6", "6", "1s"],
+            // "preLaunchTask": "build",
+            // set environment variables
+            // "environment": [
+            //     {
+            //         "name": "DISPLAY",
+            //         "value": ":1.0"
+            //     }
+            // ],
+            
+        }
+    ]
+}
