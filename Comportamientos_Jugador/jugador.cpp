@@ -34,6 +34,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 	cout << "Vida: " << sensores.vida << endl;
 	cout << endl;
 
+	cout << "hola" << endl;
 
 	// Determinar el efecto de la ultima accion enviada
 	return accion;
@@ -42,3 +43,4 @@ Action ComportamientoJugador::think(Sensores sensores){
 int ComportamientoJugador::interact(Action accion, int valor){
   return false;
 }
+
