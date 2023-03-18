@@ -1,4 +1,4 @@
-#include "../Comportamientos_Jugador/jugador.hpp"
+#include "jugador.hpp"
 #include <iostream>
 using namespace std;
 
@@ -75,13 +75,13 @@ Action ComportamientoJugador::think(Sensores sensores){
 			a = current_state.brujula;
 			a = (a+7)%8;
 			current_state.brujula = static_cast<Orientacion>(a);
-			//girar_derecha = (rand()%2 ==0); // NO ESTOY SEGURO.
+			girar_derecha = (rand()%2 ==0);
 		break;
 		case actTURN_SR:
 			a = current_state.brujula;
 			a = (a+1)%8;
 			current_state.brujula = static_cast<Orientacion>(a);
-			//girar_derecha = (rand()%2 ==0); // NO ESTOY SEGURO.
+			girar_derecha = (rand()%2 ==0);
 		break;
 		case actTURN_BL:
 			a = current_state.brujula;
@@ -97,7 +97,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 
 	//Decisiones
 
-	if (sensores.posF!=-1 and !bien_situado){ //sensores.terreno[0]==’G’ and !bien_situado
+	if (sensores.terreno[0]=='G' and !bien_situado){
 		current_state.fil = sensores.posF;
 		current_state.col= sensores.posC;
 		current_state.brujula = sensores.sentido;
