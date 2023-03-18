@@ -3,7 +3,96 @@
 using namespace std;
 
 void PonerTerrenoEnMatriz(const vector<unsigned char> & terreno, const state &st, vector<vector<unsigned char>> &matriz) {
-	matriz[st.fil][st.col] = terreno[0];
+
+	int fila = st.fil;
+	int col = st.col;
+
+	switch(st.brujula) {
+		case norte:
+			matriz[fila][col] = terreno[0];
+			matriz[fila-1][col-1] = terreno[1];
+			matriz[fila-1][col] = terreno[2];
+			matriz[fila-1][col+1] = terreno[3];
+			matriz[fila-2][col-2] = terreno[4];
+			matriz[fila-2][col-1] = terreno[5];
+			matriz[fila-2][col] = terreno[6];
+			matriz[fila-2][col+1] = terreno[7];
+			matriz[fila-2][col+2] = terreno[8];
+			matriz[fila-3][col-3] = terreno[9];
+			matriz[fila-3][col-2] = terreno[10];
+			matriz[fila-3][col-1] = terreno[11];
+			matriz[fila-3][col] = terreno[12];
+			matriz[fila-3][col+1] = terreno[13];
+			matriz[fila-3][col+2] = terreno[14];
+			matriz[fila-3][col+3] = terreno[15];
+		break;
+		case noreste:
+			
+		break;
+		case este:
+			matriz[fila][col] = terreno[0];
+			matriz[fila-1][col+1] = terreno[1];
+			matriz[fila][col+1] = terreno[2];
+			matriz[fila+1][col+1] = terreno[3];
+			matriz[fila-2][col+2] = terreno[4];
+			matriz[fila-1][col+2] = terreno[5];
+			matriz[fila][col+2] = terreno[6];
+			matriz[fila+1][col+2] = terreno[7];
+			matriz[fila+2][col+2] = terreno[8];
+			matriz[fila-3][col+3] = terreno[9];
+			matriz[fila-2][col+3] = terreno[10];
+			matriz[fila-1][col+3] = terreno[11];
+			matriz[fila][col+3] = terreno[12];
+			matriz[fila+1][col+3] = terreno[13];
+			matriz[fila+2][col+3] = terreno[14];
+			matriz[fila+3][col+3] = terreno[15];
+		break;
+		case sureste:
+			
+		break;
+		case sur:
+			matriz[fila][col] = terreno[0];
+			matriz[fila+1][col+1] = terreno[1];
+			matriz[fila+1][col] = terreno[2];
+			matriz[fila+1][col-1] = terreno[3];
+			matriz[fila+2][col+2] = terreno[4];
+			matriz[fila+2][col+1] = terreno[5];
+			matriz[fila+2][col] = terreno[6];
+			matriz[fila+2][col-1] = terreno[7];
+			matriz[fila+2][col-2] = terreno[8];
+			matriz[fila+3][col+3] = terreno[9];
+			matriz[fila+3][col+2] = terreno[10];
+			matriz[fila+3][col+1] = terreno[11];
+			matriz[fila+3][col] = terreno[12];
+			matriz[fila+3][col-1] = terreno[13];
+			matriz[fila+3][col-2] = terreno[14];
+			matriz[fila+3][col-3] = terreno[15];
+		break;
+		case suroeste:
+			
+		break;
+		case oeste:
+			matriz[fila][col] = terreno[0];
+			matriz[fila+1][col-1] = terreno[1];
+			matriz[fila][col-1] = terreno[2];
+			matriz[fila-1][col-1] = terreno[3];
+			matriz[fila+2][col-2] = terreno[4];
+			matriz[fila+1][col-2] = terreno[5];
+			matriz[fila][col-2] = terreno[6];
+			matriz[fila-1][col-2] = terreno[7];
+			matriz[fila-2][col-2] = terreno[8];
+			matriz[fila+3][col-3] = terreno[9];
+			matriz[fila+2][col-3] = terreno[10];
+			matriz[fila+1][col-3] = terreno[11];
+			matriz[fila][col-3] = terreno[12];
+			matriz[fila-1][col-3] = terreno[13];
+			matriz[fila-2][col-3] = terreno[14];
+			matriz[fila-3][col-3] = terreno[15];
+		break;
+		case noroeste:
+			
+		break;
+	}
 }
 
 Action ComportamientoJugador::think(Sensores sensores){
