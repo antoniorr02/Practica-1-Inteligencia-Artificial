@@ -20,6 +20,20 @@ class ComportamientoJugador : public Comportamiento{
       last_action = actIDLE;
       girar_derecha = false;
       bien_situado = false;
+
+      matrizPaso = new int*[size];
+      for (int i = 0; i < size; i++) {
+            matrizPaso[i] = new int[size];
+      }
+      for (unsigned int i = 0; i < size; i++) {
+        for (unsigned int j = 0; j < size; j++) {
+          matrizPaso[i][j] = 0;
+        }
+      }
+      bikini = false;
+      zapatillas = false;
+      num_giros_dcha = 0;
+      num_giros_izq = 0;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -35,7 +49,9 @@ class ComportamientoJugador : public Comportamiento{
   state current_state;
   bool girar_derecha;
   bool bien_situado;
-
+  int ** matrizPaso;
+  bool bikini, zapatillas;
+  int num_giros_dcha, num_giros_izq;
 };
 
 #endif
