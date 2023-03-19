@@ -260,18 +260,134 @@ Action ComportamientoJugador::think(Sensores sensores){
 	accion.erase(accion.begin());
 
 	//Decisiones
+
+	bool accion_elegida = accion.size() != 0;
 	
 	// A partir de nivel 1, buscar ubicarse en el mapa.
-	int punto;
-	if (sensores.nivel != 0 && !bien_situado) {
+	int punto_ubicacion;
+	if (sensores.nivel != 0 && !bien_situado && !accion_elegida) {
 		for (int i = 0; i < sensores.terreno.size(); i++) {
 			if (sensores.terreno[i] == 'G') {
-				punto = i;
+				punto_ubicacion = i;
 			}
 		}
-		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
-		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
-		//if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+
+		if (punto_ubicacion != 0) {
+			switch (punto_ubicacion) {
+				//// Inicio hacia delante.
+				case 2:
+					accion.push_back(actFORWARD);
+				break;
+				case 6:
+					if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 12:
+					// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+					if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				//// Inicio a la derecha
+				case 3:
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				break;
+				case 8:
+					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 15:
+					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 7:
+					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 13:
+					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 14:
+					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				///// Inicio a la izquierda
+				case 1:
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				break;
+				case 4:
+					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);				
+					}
+				break;
+				case 9:
+					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 5:
+					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 11:
+					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actFORWARD);
+					}
+				break;
+				case 10:
+					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SR);
+						accion.push_back(actFORWARD);
+						accion.push_back(actTURN_SL);
+						accion.push_back(actFORWARD);
+					}
+				break;
+			}
+		}
 	}
 
 
@@ -314,7 +430,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 		}
 	}
 
-	// Comprobación de objetos.
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Comprobación de objetos y batería.
 
 	if (sensores.terreno[0] == 'K') {
 		bikini = true;
@@ -327,61 +444,439 @@ Action ComportamientoJugador::think(Sensores sensores){
 	int punto_zapatillas = 0;
 	int punto_recarga = 0;
 	if (!bikini || !zapatillas) {
-		for (int i = 0; i < sensores.terreno.size(); i++) {
+		for (int i = 1; i < sensores.terreno.size(); i++) {
 			if (sensores.terreno[i] == 'K') {
 				punto_bikini = i;
 			}
 			if (sensores.terreno[i] == 'D') {
 				punto_zapatillas = i;
 			}
+		}
+	}
+	if (sensores.bateria < 3000) {
+		for (int i = 1; i < sensores.terreno.size(); i++) {
 			if (sensores.terreno[i] == 'X') {
 				punto_recarga = i;
 			}
 		}
 	}
 
-	/////////////////////////////////////////////////////////////
-	bool accion_elegida = accion.size() != 0;
+	////////////////////////////////////////////////
 
-/*
-	if (sensores.bateria < 2500 && punto_recarga != 0 && !accion_elegida) {
-		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
-		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
-		if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+
+	if (sensores.bateria < 3000 && punto_recarga != 0 && !accion_elegida) {
+		switch (punto_recarga) {
+			//// Inicio hacia delante.
+			case 2:
+				accion.push_back(actFORWARD);
+			break;
+			case 6:
+				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 12:
+				// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			//// Inicio a la derecha
+			case 3:
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			break;
+			case 8:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 15:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 7:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 13:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 14:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			///// Inicio a la izquierda
+			case 1:
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			break;
+			case 4:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);				
+				}
+			break;
+			case 9:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 5:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 11:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 10:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				}
+			break;
+		}
+		for (int i = 0; i < (((1-(sensores.bateria/5000))*5000)/10)-1; i++)
+			accion.push_back(actIDLE);
 	}
 
 	if (!bikini && punto_bikini != 0 && !accion_elegida) {
-		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
-		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
-		if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+		switch (punto_bikini) {
+			//// Inicio hacia delante.
+			case 2:
+				accion.push_back(actFORWARD);
+			break;
+			case 6:
+				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 12:
+				// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			//// Inicio a la derecha
+			case 3:
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			break;
+			case 8:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 15:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 7:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 13:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 14:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			///// Inicio a la izquierda
+			case 1:
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			break;
+			case 4:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);				
+				}
+			break;
+			case 9:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 5:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 11:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 10:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				}
+			break;
+		}
 	}
 
 	if (!zapatillas && punto_zapatillas != 0 && !accion_elegida) {
-		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
-		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
-		if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
-	}*/// NO SIRVE?
+		switch (punto_zapatillas) {
+			//// Inicio hacia delante.
+			case 2:
+				accion.push_back(actFORWARD);
+			break;
+			case 6:
+				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 12:
+				// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			//// Inicio a la derecha
+			case 3:
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			break;
+			case 8:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 15:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 7:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 13:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 14:
+				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			///// Inicio a la izquierda
+			case 1:
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			break;
+			case 4:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);				
+				}
+			break;
+			case 9:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 5:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 11:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actFORWARD);
+				}
+			break;
+			case 10:
+				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SR);
+					accion.push_back(actFORWARD);
+					accion.push_back(actTURN_SL);
+					accion.push_back(actFORWARD);
+				}
+			break;
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (!accion_elegida) {
 
 		bool condicion1 = veces < 3;
-		bool condicion2 = (sensores.terreno[2] == 'D' || sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X') && sensores.superficie[2] == '_';
-		bool condicion3 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && sensores.superficie[2] == '_';
+		bool casilla_libre = sensores.superficie[2] == '_';
+		bool condicion2 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
+		bool condicion3 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
 
-		bool condicion2a = (sensores.terreno[1] == 'D' || sensores.terreno[1] == 'K' || sensores.terreno[1] == 'X') && sensores.superficie[1] == '_';
-		bool condicion2b = (sensores.terreno[3] == 'D' || sensores.terreno[3] == 'K' || sensores.terreno[3] == 'X') && sensores.superficie[3] == '_';
+		bool porIzq = (sensores.terreno[1] == 'T' or sensores.terreno[1] == 'S' or sensores.terreno[1] == 'G') && sensores.superficie[1] == '_';
+		bool porDcha = (sensores.terreno[3] == 'T' or sensores.terreno[3] == 'S' or sensores.terreno[3] == 'G') && sensores.superficie[3] == '_';
 
-		bool condicion3a = (sensores.terreno[1] == 'T' || sensores.terreno[1] == 'S' || sensores.terreno[1] == 'G' || (sensores.terreno[1] == 'A' && bikini) || (sensores.terreno[1] == 'B' && zapatillas)) && sensores.superficie[1] == '_';
-		bool condicion3b = (sensores.terreno[3] == 'T' || sensores.terreno[3] == 'S' || sensores.terreno[3] == 'G' || (sensores.terreno[3] == 'A' && bikini) || (sensores.terreno[3] == 'B' && zapatillas)) && sensores.superficie[3] == '_';
 
-		if (sensores.terreno[0] == 'X' && sensores.bateria < 5000) {
-			accion.push_back(actIDLE);
-		} else if (condicion2){
+		if (((sensores.terreno[5] == 'M' && sensores.terreno[7] == 'M' && sensores.terreno[6] != 'M' && sensores.terreno[2] != 'M') ||
+					(sensores.terreno[5] == 'P' && sensores.terreno[7] == 'P' && sensores.terreno[6] != 'P' && sensores.terreno[2] != 'P')) && casilla_libre ) { // Salir entre muros
 			accion.push_back(actFORWARD);
-		} else if (condicion2a) {
+			accion.push_back(actFORWARD);
+		} else if (((sensores.terreno[11] == 'M' && sensores.terreno[13] == 'M' && sensores.terreno[12] != 'M' && sensores.terreno[2] != 'M' && sensores.terreno[6] != 'M') ||
+					(sensores.terreno[11] == 'P' && sensores.terreno[13] == 'P' && sensores.terreno[12] != 'P' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'P')) && casilla_libre) {
+			accion.push_back(actFORWARD);
+			accion.push_back(actFORWARD);
+			accion.push_back(actFORWARD);
+		} else if (condicion3) {
+			accion.push_back(actFORWARD);
+		} else if (condicion1 && condicion2) {
+			accion.push_back(actFORWARD);
+		} /*else if (porIzq) { // SOLO PETA EL MAPA DE 75 --> MOTIVO??
 			accion.push_back(actTURN_SL);
 			accion.push_back(actFORWARD);
-		} else if (condicion2b) {
+		} else if (porDcha) {
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		}*/ else if(!girar_derecha) {
+			accion.push_back(actTURN_SL);
+			girar_derecha = (rand()%2 == 0);
+		}  else {
+			accion.push_back(actTURN_SR);
+			girar_derecha = (rand()%2 == 0);
+		}
+
+		
+		/*
+		if((sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G') and sensores.superficie[2] == '_') {
+			accion.push_back(actFORWARD);
+		} else if(!girar_derecha) {
+			accion.push_back(actTURN_SL);
+			girar_derecha = (rand()%2 ==0);
+		} else {
+			accion.push_back(actTURN_SR);
+			girar_derecha = (rand()%2 ==0);
+		}*/
+		
+		
+		
+		/* else if (condicion1 && excepcional){
+			accion.push_back(actFORWARD);
+		} else if (condicion1 && excepcionalA) {
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		} else if (condicion1 && excepcionalB) {
 			accion.push_back(actTURN_SR);
 			accion.push_back(actFORWARD);
 		} else if (condicion1 && condicion3) {
@@ -392,13 +887,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 		} else if (condicion3b) {
 			accion.push_back(actTURN_SR);
 			accion.push_back(actFORWARD);
-		} else if(!girar_derecha) {
-			accion.push_back(actTURN_SL);
-			girar_derecha = (rand()%2 == 0);
-		} else {
-			accion.push_back(actTURN_SR);
-			girar_derecha = (rand()%2 == 0);
-		}
+		} */
 	}
 
 

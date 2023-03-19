@@ -70,10 +70,6 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "obj3DLib::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 2,
 			"id" : "motorLib::@6890427a1f51a3e7e1df"
 		},
 		{
@@ -87,6 +83,10 @@
 		{
 			"backtrace" : 2,
 			"id" : "modelosBelkanLib::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "obj3DLib::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "practica1SG::@6890427a1f51a3e7e1df",
