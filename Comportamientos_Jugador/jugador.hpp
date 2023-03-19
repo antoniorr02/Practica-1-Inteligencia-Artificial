@@ -33,6 +33,7 @@ class ComportamientoJugador : public Comportamiento{
       bikini = false;
       zapatillas = false;
       accion.push_back(actIDLE);
+        vector<Action> accion;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}

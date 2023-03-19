@@ -260,6 +260,20 @@ Action ComportamientoJugador::think(Sensores sensores){
 	accion.erase(accion.begin());
 
 	//Decisiones
+	
+	// A partir de nivel 1, buscar ubicarse en el mapa.
+	int punto;
+	if (sensores.nivel != 0 && !bien_situado) {
+		for (int i = 0; i < sensores.terreno.size(); i++) {
+			if (sensores.terreno[i] == 'G') {
+				punto = i;
+			}
+		}
+		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
+		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
+		//if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+	}
+
 
 	if ((sensores.terreno[0]=='G' and !bien_situado) || (sensores.nivel == 0 and !bien_situado)){
 		current_state.fil = sensores.posF;
@@ -300,6 +314,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 		}
 	}
 
+	// Comprobación de objetos.
+
 	if (sensores.terreno[0] == 'K') {
 		bikini = true;
 	}
@@ -307,17 +323,57 @@ Action ComportamientoJugador::think(Sensores sensores){
 		zapatillas = true;
 	}
 
-	bool condicion1 = veces < 3;
-	bool condicion2 = (sensores.terreno[2] == 'D' || sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X') && sensores.superficie[2] == '_';
-	bool condicion3 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && sensores.superficie[2] == '_';
+	int punto_bikini = 0;
+	int punto_zapatillas = 0;
+	int punto_recarga = 0;
+	if (!bikini || !zapatillas) {
+		for (int i = 0; i < sensores.terreno.size(); i++) {
+			if (sensores.terreno[i] == 'K') {
+				punto_bikini = i;
+			}
+			if (sensores.terreno[i] == 'D') {
+				punto_zapatillas = i;
+			}
+			if (sensores.terreno[i] == 'X') {
+				punto_recarga = i;
+			}
+		}
+	}
 
-	bool condicion2a = (sensores.terreno[1] == 'D' || sensores.terreno[1] == 'K' || sensores.terreno[1] == 'X') && sensores.superficie[1] == '_';
-	bool condicion2b = (sensores.terreno[3] == 'D' || sensores.terreno[3] == 'K' || sensores.terreno[3] == 'X') && sensores.superficie[3] == '_';
+	/////////////////////////////////////////////////////////////
+	bool accion_elegida = accion.size() != 0;
 
-	bool condicion3a = (sensores.terreno[1] == 'T' || sensores.terreno[1] == 'S' || sensores.terreno[1] == 'G' || (sensores.terreno[1] == 'A' && bikini) || (sensores.terreno[1] == 'B' && zapatillas)) && sensores.superficie[1] == '_';
-	bool condicion3b = (sensores.terreno[3] == 'T' || sensores.terreno[3] == 'S' || sensores.terreno[3] == 'G' || (sensores.terreno[3] == 'A' && bikini) || (sensores.terreno[3] == 'B' && zapatillas)) && sensores.superficie[3] == '_';
+/*
+	if (sensores.bateria < 2500 && punto_recarga != 0 && !accion_elegida) {
+		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
+		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
+		if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+	}
 
-	if (accion.size() == 0) {
+	if (!bikini && punto_bikini != 0 && !accion_elegida) {
+		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
+		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
+		if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+	}
+
+	if (!zapatillas && punto_zapatillas != 0 && !accion_elegida) {
+		if (punto == 2 || punto == 6 || punto == 12) {accion.push_back(actFORWARD);}
+		if (punto == 3 || punto == 7 || punto == 13 || punto == 8 || punto == 14 || punto == 15) {accion.push_back(actTURN_SR);}
+		if (punto == 1 || punto == 5 || punto == 11 || punto == 10 || punto == 4 || punto == 9) {accion.push_back(actTURN_SL);}
+	}*/// NO SIRVE?
+
+	if (!accion_elegida) {
+
+		bool condicion1 = veces < 3;
+		bool condicion2 = (sensores.terreno[2] == 'D' || sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X') && sensores.superficie[2] == '_';
+		bool condicion3 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && sensores.superficie[2] == '_';
+
+		bool condicion2a = (sensores.terreno[1] == 'D' || sensores.terreno[1] == 'K' || sensores.terreno[1] == 'X') && sensores.superficie[1] == '_';
+		bool condicion2b = (sensores.terreno[3] == 'D' || sensores.terreno[3] == 'K' || sensores.terreno[3] == 'X') && sensores.superficie[3] == '_';
+
+		bool condicion3a = (sensores.terreno[1] == 'T' || sensores.terreno[1] == 'S' || sensores.terreno[1] == 'G' || (sensores.terreno[1] == 'A' && bikini) || (sensores.terreno[1] == 'B' && zapatillas)) && sensores.superficie[1] == '_';
+		bool condicion3b = (sensores.terreno[3] == 'T' || sensores.terreno[3] == 'S' || sensores.terreno[3] == 'G' || (sensores.terreno[3] == 'A' && bikini) || (sensores.terreno[3] == 'B' && zapatillas)) && sensores.superficie[3] == '_';
+
 		if (sensores.terreno[0] == 'X' && sensores.bateria < 5000) {
 			accion.push_back(actIDLE);
 		} else if (condicion2){
