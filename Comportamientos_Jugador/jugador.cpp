@@ -157,7 +157,6 @@ void PonerTerrenoEnMatriz(const vector<unsigned char> & terreno, const state &st
 
 Action ComportamientoJugador::think(Sensores sensores){
 
-	Action accion = actIDLE;
 	int a;
 
 	cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC << " ";
@@ -224,12 +223,14 @@ Action ComportamientoJugador::think(Sensores sensores){
 			}
 			// Voy añadiendo 1 a la matriz de paso cada vez q paso por la misma casilla
 			// Luego buscaré dar prioridad a las casillas no visitadas.
-			matrizPaso[sensores.posF][sensores.posC] += 1;
-			for (unsigned int i = 0; i < sensores.terreno.size(); i++) {
-				for (unsigned int j = 0; j < sensores.terreno.size(); j++) {
-					cout << matrizPaso[i][j] << " ";
+			if (bien_situado) {
+				matrizPaso[sensores.posF][sensores.posC] += 1;
+				for (unsigned int i = 0; i < sensores.terreno.size(); i++) {
+					for (unsigned int j = 0; j < sensores.terreno.size(); j++) {
+						cout << matrizPaso[i][j] << " ";
+					}
+					cout << endl;
 				}
-				cout << endl;
 			}
 		break;
 		case actTURN_SL:
@@ -256,6 +257,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 		break;
 	}
 
+	accion.erase(accion.begin());
+
 	//Decisiones
 
 	if ((sensores.terreno[0]=='G' and !bien_situado) || (sensores.nivel == 0 and !bien_situado)){
@@ -265,8 +268,36 @@ Action ComportamientoJugador::think(Sensores sensores){
 		bien_situado = true;
 	}
 
+	int veces = 0;
 	if (bien_situado){
 		PonerTerrenoEnMatriz(sensores.terreno, current_state, mapaResultado);
+
+		switch(current_state.brujula) {
+			case norte:
+				veces = matrizPaso[current_state.fil-1][current_state.col];
+			break;
+			case noreste:
+				veces = matrizPaso[current_state.fil-1][current_state.col+1];
+			break;
+			case este:
+				veces = matrizPaso[current_state.fil][current_state.col+1];
+			break;
+			case sureste:
+				veces = matrizPaso[current_state.fil+1][current_state.col+1];
+			break;
+			case sur:
+				veces = matrizPaso[current_state.fil+1][current_state.col];
+			break;
+			case suroeste:
+				veces = matrizPaso[current_state.fil+1][current_state.col-1];
+			break;
+			case oeste:
+				veces = matrizPaso[current_state.fil][current_state.col-1];
+			break;
+			case noroeste:
+				veces = matrizPaso[current_state.fil-1][current_state.col-1];
+			break;
+		}
 	}
 
 	if (sensores.terreno[0] == 'K') {
@@ -276,48 +307,42 @@ Action ComportamientoJugador::think(Sensores sensores){
 		zapatillas = true;
 	}
 
-	int veces;
-	switch(current_state.brujula) {
-		case norte:
-			veces = matrizPaso[current_state.fil-1][current_state.col];
-		break;
-		case noreste:
-			veces = matrizPaso[current_state.fil-1][current_state.col+1];
-		break;
-		case este:
-			veces = matrizPaso[current_state.fil][current_state.col+1];
-		break;
-		case sureste:
-			veces = matrizPaso[current_state.fil+1][current_state.col+1];
-		break;
-		case sur:
-			veces = matrizPaso[current_state.fil+1][current_state.col];
-		break;
-		case suroeste:
-			veces = matrizPaso[current_state.fil+1][current_state.col-1];
-		break;
-		case oeste:
-			veces = matrizPaso[current_state.fil][current_state.col-1];
-		break;
-		case noroeste:
-			veces = matrizPaso[current_state.fil-1][current_state.col-1];
-		break;
-	}
-
-	bool condicion1 = veces < 3 || sensores.terreno[2] == 'X';
+	bool condicion1 = veces < 3;
 	bool condicion2 = (sensores.terreno[2] == 'D' || sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X') && sensores.superficie[2] == '_';
-	bool condicion3 = (sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or (sensores.terreno[2] == 'A' && bikini) or (sensores.terreno[2] == 'B' && zapatillas)) and sensores.superficie[2] == '_';
+	bool condicion3 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && sensores.superficie[2] == '_';
 
-	if (sensores.terreno[0] == 'X' && sensores.bateria < 5000) {
-		accion = actIDLE;
-	} else if (condicion1 && (condicion2 || condicion3)) {
-			accion = actFORWARD;
-	} else if(!girar_derecha) {
-		accion = actTURN_SL;
-		girar_derecha = (rand()%2 == 0);
-	} else {
-		accion = actTURN_SR;
-		girar_derecha = (rand()%2 == 0);
+	bool condicion2a = (sensores.terreno[1] == 'D' || sensores.terreno[1] == 'K' || sensores.terreno[1] == 'X') && sensores.superficie[1] == '_';
+	bool condicion2b = (sensores.terreno[3] == 'D' || sensores.terreno[3] == 'K' || sensores.terreno[3] == 'X') && sensores.superficie[3] == '_';
+
+	bool condicion3a = (sensores.terreno[1] == 'T' || sensores.terreno[1] == 'S' || sensores.terreno[1] == 'G' || (sensores.terreno[1] == 'A' && bikini) || (sensores.terreno[1] == 'B' && zapatillas)) && sensores.superficie[1] == '_';
+	bool condicion3b = (sensores.terreno[3] == 'T' || sensores.terreno[3] == 'S' || sensores.terreno[3] == 'G' || (sensores.terreno[3] == 'A' && bikini) || (sensores.terreno[3] == 'B' && zapatillas)) && sensores.superficie[3] == '_';
+
+	if (accion.size() == 0) {
+		if (sensores.terreno[0] == 'X' && sensores.bateria < 5000) {
+			accion.push_back(actIDLE);
+		} else if (condicion2){
+			accion.push_back(actFORWARD);
+		} else if (condicion2a) {
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		} else if (condicion2b) {
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		} else if (condicion1 && condicion3) {
+			accion.push_back(actFORWARD);
+		} else if (condicion3a) {
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		} else if (condicion3b) {
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		} else if(!girar_derecha) {
+			accion.push_back(actTURN_SL);
+			girar_derecha = (rand()%2 == 0);
+		} else {
+			accion.push_back(actTURN_SR);
+			girar_derecha = (rand()%2 == 0);
+		}
 	}
 
 
@@ -437,8 +462,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 
 
 	// Devolver posicion - Determinar el efecto de la ultima accion enviada
-	last_action = accion;
-	return accion;
+	last_action = accion[0];
+	return last_action;
 }
 
 int ComportamientoJugador::interact(Action accion, int valor){
