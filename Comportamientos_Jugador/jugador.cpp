@@ -886,25 +886,25 @@ Action ComportamientoJugador::think(Sensores sensores){
 		accion = actTURN_SR;
 	} else if (!bien_situado && (punto_ubicacion == 1 || punto_ubicacion == 4 || punto_ubicacion == 9)) {
 		accion = actTURN_SL;
-	} else if (!bien_situado && (punto_ubicacion == 5 || punto_ubicacion == 7 || punto_ubicacion == 11 || punto_ubicacion == 13 || punto_ubicacion == 10 || punto_ubicacion == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T')) {
+	} else if (!bien_situado && (punto_ubicacion == 5 || punto_ubicacion == 7 || punto_ubicacion == 11 || punto_ubicacion == 13 || punto_ubicacion == 10 || punto_ubicacion == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
 		accion = actFORWARD;
 	} else if (sensores.bateria < 3000 && (punto_recarga == 3 || punto_recarga == 8 || punto_recarga == 15)) {
 		accion = actTURN_SR;
 	} else if (sensores.bateria < 3000 && (punto_recarga == 1 || punto_recarga == 4 || punto_recarga == 9)) {
 		accion = actTURN_SL;
-	} else if (sensores.bateria < 3000 && (punto_recarga == 5 || punto_recarga == 7 || punto_recarga == 11 || punto_recarga == 13 || punto_recarga == 10 || punto_recarga == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T')) {
+	} else if (sensores.bateria < 3000 && (punto_recarga == 5 || punto_recarga == 7 || punto_recarga == 11 || punto_recarga == 13 || punto_recarga == 10 || punto_recarga == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
 		accion = actFORWARD;
 	} else if (!bikini && (punto_bikini == 3 || punto_bikini == 8 || punto_bikini == 15)) {
 		accion = actTURN_SR;
 	} else if (!bikini && (punto_bikini == 1 || punto_bikini == 4 || punto_bikini == 9)) {
 		accion = actTURN_SL;
-	} else if (!bikini && (punto_bikini == 5 || punto_bikini == 7 || punto_bikini == 11 || punto_bikini == 13 || punto_bikini == 10 || punto_bikini == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T')) {
+	} else if (!bikini && (punto_bikini == 5 || punto_bikini == 7 || punto_bikini == 11 || punto_bikini == 13 || punto_bikini == 10 || punto_bikini == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
 		accion = actFORWARD;
 	} else if (!zapatillas && (punto_zapatillas == 3 || punto_zapatillas == 8 || punto_zapatillas == 15)) {
 		accion = actTURN_SR;
 	} else if (!zapatillas && (punto_zapatillas == 1 || punto_zapatillas == 4 || punto_zapatillas == 9)) {
 		accion = actTURN_SL;
-	} else if (!zapatillas && (punto_zapatillas == 5 || punto_zapatillas == 7 || punto_zapatillas == 11 || punto_zapatillas == 13 || punto_zapatillas == 10 || punto_zapatillas == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T')) {
+	} else if (!zapatillas && (punto_zapatillas == 5 || punto_zapatillas == 7 || punto_zapatillas == 11 || punto_zapatillas == 13 || punto_zapatillas == 10 || punto_zapatillas == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
 		accion = actFORWARD;
 	} else if (((sensores.terreno[5] == 'M' && sensores.terreno[7] == 'M' && sensores.terreno[6] != 'M' && sensores.terreno[2] != 'M') ||
 				(sensores.terreno[5] == 'P' && sensores.terreno[7] == 'P' && sensores.terreno[6] != 'P' && sensores.terreno[2] != 'P')) && casilla_libre ) { // Salir entre muros
