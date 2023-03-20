@@ -187,8 +187,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 
 	//Actualizacion
 
-	
-
 	switch(last_action) {
 		case actFORWARD:
 			switch(current_state.brujula) {
@@ -579,7 +577,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 				}
 			break;
 		}
-		for (int i = 0; i < (((1-(sensores.bateria/5000))*5000)/10)-1; i++)
+		for (int i = 0; i < 250; i++)
 			accion.push_back(actIDLE);
 	}
 
@@ -826,11 +824,35 @@ Action ComportamientoJugador::think(Sensores sensores){
 		bool condicion2 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
 		bool condicion3 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
 
-		bool porIzq = (sensores.terreno[1] == 'T' or sensores.terreno[1] == 'S' or sensores.terreno[1] == 'G') && sensores.superficie[1] == '_';
-		bool porDcha = (sensores.terreno[3] == 'T' or sensores.terreno[3] == 'S' or sensores.terreno[3] == 'G') && sensores.superficie[3] == '_';
+		/////////// APARENTEMENTE NO ES BUENA IDEA POR LOS RESULTADOS
+		/*		if (!casilla_libre) {
+			accion.push_back(actIDLE);
+		} // Si hay aldeano o lobo no moverse, esperar que se quite.
+		*/
+		///////////////////////////////////////////////////////////////
 
+		// Programar para pasar entre muros:
+		/*
+			OPCIONES:
+			1. Cuando vayamos por al lado de un muro si cambia el tipo de terreno a tierra suelo o bosque con zapas o agua con bikini que gire y avance
+			2. Cuando vea: muro muro uwu muro --> Ir hacia uwu.
+		*/
+		/////////////////////////////////////
 
-		if (((sensores.terreno[5] == 'M' && sensores.terreno[7] == 'M' && sensores.terreno[6] != 'M' && sensores.terreno[2] != 'M') ||
+		bool salir_entre_muros_dcha = sensores.terreno[3] == 'M' && (sensores.terreno[7] == 'T' ||  sensores.terreno[7] == 'S' || (sensores.terreno[7] == 'A' && bikini) || (sensores.terreno[7] == 'B' && zapatillas));
+		bool salir_entre_muros_izda = sensores.terreno[1] == 'M' && (sensores.terreno[5] == 'T' ||  sensores.terreno[5] == 'S' || (sensores.terreno[5] == 'A' && bikini) || (sensores.terreno[5] == 'B' && zapatillas));
+
+		if (salir_entre_muros_izda && sensores.terreno[2] != 'M' && casilla_libre) {
+			accion.push_back(actFORWARD);
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+			if(mapaResultado.size() >= 75){accion.push_back(actTURN_SL);}
+		} else if (salir_entre_muros_dcha && sensores.terreno[2] != 'M' && casilla_libre) {
+			accion.push_back(actFORWARD);
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+			if(mapaResultado.size() >= 75) {accion.push_back(actTURN_SR);}
+		} else if (((sensores.terreno[5] == 'M' && sensores.terreno[7] == 'M' && sensores.terreno[6] != 'M' && sensores.terreno[2] != 'M') ||
 					(sensores.terreno[5] == 'P' && sensores.terreno[7] == 'P' && sensores.terreno[6] != 'P' && sensores.terreno[2] != 'P')) && casilla_libre ) { // Salir entre muros
 			accion.push_back(actFORWARD);
 			accion.push_back(actFORWARD);
@@ -843,53 +865,38 @@ Action ComportamientoJugador::think(Sensores sensores){
 			accion.push_back(actFORWARD);
 		} else if (condicion1 && condicion2) {
 			accion.push_back(actFORWARD);
-		} /*else if (porIzq) { // SOLO PETA EL MAPA DE 75 --> MOTIVO??
-			accion.push_back(actTURN_SL);
-			accion.push_back(actFORWARD);
-		} else if (porDcha) {
-			accion.push_back(actTURN_SR);
-			accion.push_back(actFORWARD);
-		}*/ else if(!girar_derecha) {
+		} else if(!girar_derecha) {
 			accion.push_back(actTURN_SL);
 			girar_derecha = (rand()%2 == 0);
 		}  else {
 			accion.push_back(actTURN_SR);
 			girar_derecha = (rand()%2 == 0);
 		}
-
 		
-		/*
-		if((sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G') and sensores.superficie[2] == '_') {
-			accion.push_back(actFORWARD);
-		} else if(!girar_derecha) {
-			accion.push_back(actTURN_SL);
-			girar_derecha = (rand()%2 ==0);
-		} else {
-			accion.push_back(actTURN_SR);
-			girar_derecha = (rand()%2 ==0);
-		}*/
-		
-		
-		
-		/* else if (condicion1 && excepcional){
-			accion.push_back(actFORWARD);
-		} else if (condicion1 && excepcionalA) {
-			accion.push_back(actTURN_SL);
-			accion.push_back(actFORWARD);
-		} else if (condicion1 && excepcionalB) {
-			accion.push_back(actTURN_SR);
-			accion.push_back(actFORWARD);
-		} else if (condicion1 && condicion3) {
-			accion.push_back(actFORWARD);
-		} else if (condicion3a) {
-			accion.push_back(actTURN_SL);
-			accion.push_back(actFORWARD);
-		} else if (condicion3b) {
-			accion.push_back(actTURN_SR);
-			accion.push_back(actFORWARD);
-		} */
 	}
 
+	// AÑADIR CONTROL DE CHOQUES O CAIDAS PARA PERDER OBJETOS
+	/*if (sensores.colision) {
+		if (sensores.superficie[0] == 'a') {
+			accion.push_back(actIDLE);
+		}
+		/*if (sensores.reset) {
+			bikini = false;
+			zapatillas = false;
+			current_state.fil = sensores.posF;
+			current_state.col= sensores.posC;
+			current_state.brujula = sensores.sentido;
+		}*/
+	/*}
+	if (sensores.superficie[0] == 'l') {
+		accion.clear();
+		accion.push_back(actIDLE);
+		bikini = false;
+		zapatillas = false;
+		bien_situado = false;
+	}  // ME CAGO EN SU PUTA MADRE.
+
+*/
 
 
 	//bool opcion1 = (sensores.terreno[1] == 'T' or sensores.terreno[1] == 'S' or sensores.terreno[1] == 'G' or (sensores.terreno[1] == 'A' && bikini == true)) and sensores.superficie[1] == '_';
