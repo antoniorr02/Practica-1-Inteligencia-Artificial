@@ -460,7 +460,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 
 	////////////////////////////////////////////////
 
-
 	if (sensores.bateria < 3000 && punto_recarga != 0 && accion.size() == 0) {
 		switch (punto_recarga) {
 			//// Inicio hacia delante.
@@ -576,9 +575,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 				}
 			break;
 		}
-		/*
-		for (int i = 0; i < 250; i++)
-			accion.push_back(actIDLE);*/
 	}
 
 	if (!bikini && punto_bikini != 0 && accion.size() == 0) {
@@ -819,100 +815,39 @@ Action ComportamientoJugador::think(Sensores sensores){
 
 	if (accion.size() == 0) {
 
+		bool condicion1 = veces < 3;
+		bool casilla_libre = sensores.superficie[2] == '_';
+		bool condicion2 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
+		bool condicion3 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
+
 		/////////// APARENTEMENTE NO ES BUENA IDEA POR LOS RESULTADOS
-		/*		if (!casilla_libre) {
+		/*if (!casilla_libre) {
 			accion.push_back(actIDLE);
 		} // Si hay aldeano o lobo no moverse, esperar que se quite.
 		*/
 		///////////////////////////////////////////////////////////////
 
-		// Programar para pasar entre muros:
-		/*
-			OPCIONES:
-			1. Cuando vayamos por al lado de un muro si cambia el tipo de terreno a tierra suelo o bosque con zapas o agua con bikini que gire y avance
-			2. Cuando vea: muro muro uwu muro --> Ir hacia uwu.
-		*/
-		/////////////////////////////////////
-	//////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////
-/*
-		bool condicion1 = veces < 3;
-		bool casilla_libre = sensores.superficie[2] == '_';
-		bool condicion2 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
-		bool condicion3 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
-
-
-		if (sensores.terreno[0] == 'X' && sensores.bateria < 4900) {
-			accion.push_back(actIDLE);
-		} else if (!bien_situado && (punto_ubicacion == 3 || punto_ubicacion == 8 || punto_ubicacion == 15)) {
-			accion.push_back(actTURN_SR);
-		} else if (!bien_situado && (punto_ubicacion == 1 || punto_ubicacion == 4 || punto_ubicacion == 9)) {
-			accion.push_back(actTURN_SL);
-		} else if (!bien_situado && (punto_ubicacion == 5 || punto_ubicacion == 7 || punto_ubicacion == 11 || punto_ubicacion == 13 || punto_ubicacion == 10 || punto_ubicacion == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
-			accion.push_back(actFORWARD);
-		} else if (sensores.bateria < 3000 && (punto_recarga == 3 || punto_recarga == 8 || punto_recarga == 15)) {
-			accion.push_back(actTURN_SR);
-		} else if (sensores.bateria < 3000 && (punto_recarga == 1 || punto_recarga == 4 || punto_recarga == 9)) {
-			accion.push_back(actTURN_SL);
-		} else if (sensores.bateria < 3000 && (punto_recarga == 5 || punto_recarga == 7 || punto_recarga == 11 || punto_recarga == 13 || punto_recarga == 10 || punto_recarga == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
-			accion.push_back(actFORWARD);
-		} else if (!bikini && (punto_bikini == 3 || punto_bikini == 8 || punto_bikini == 15)) {
-			accion.push_back(actTURN_SR);
-		} else if (!bikini && (punto_bikini == 1 || punto_bikini == 4 || punto_bikini == 9)) {
-			accion.push_back(actTURN_SL);
-		} else if (!bikini && (punto_bikini == 5 || punto_bikini == 7 || punto_bikini == 11 || punto_bikini == 13 || punto_bikini == 10 || punto_bikini == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
-			accion.push_back(actFORWARD);
-		} else if (!zapatillas && (punto_zapatillas == 3 || punto_zapatillas == 8 || punto_zapatillas == 15)) {
-			accion.push_back(actTURN_SR);
-		} else if (!zapatillas && (punto_zapatillas == 1 || punto_zapatillas == 4 || punto_zapatillas == 9)) {
-			accion.push_back(actTURN_SL);
-		} else if (!zapatillas && (punto_zapatillas == 5 || punto_zapatillas == 7 || punto_zapatillas == 11 || punto_zapatillas == 13 || punto_zapatillas == 10 || punto_zapatillas == 14) && (sensores.terreno[2] != 'M' || sensores.terreno[2] != 'T') && casilla_libre) {
-			accion.push_back(actFORWARD);
-		} else if (((sensores.terreno[5] == 'M' && sensores.terreno[7] == 'M' && sensores.terreno[6] != 'M' && sensores.terreno[2] != 'M') ||
-					(sensores.terreno[5] == 'P' && sensores.terreno[7] == 'P' && sensores.terreno[6] != 'P' && sensores.terreno[2] != 'P')) && casilla_libre ) { // Salir entre muros
-			accion.push_back(actFORWARD);
-		} else if (((sensores.terreno[11] == 'M' && sensores.terreno[13] == 'M' && sensores.terreno[12] != 'M' && sensores.terreno[2] != 'M' && sensores.terreno[6] != 'M') ||
-					(sensores.terreno[11] == 'P' && sensores.terreno[13] == 'P' && sensores.terreno[12] != 'P' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'P')) && casilla_libre) {
-			accion.push_back(actFORWARD);
-		} else if (((sensores.terreno[3] == 'M' || sensores.terreno[3] == 'P') && (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S')) && casilla_libre) {
-			accion.push_back(actFORWARD);
-			muro_dcha = true;
-		} else if ((sensores.terreno[3] != 'T' || sensores.terreno[3] != 'P') && muro_dcha) {
-			accion.push_back(actTURN_SR);
-			muro_dcha = false;
-		} else if (((sensores.terreno[1] == 'M' || sensores.terreno[1] == 'P') && (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S')) && casilla_libre) {
-			accion.push_back(actFORWARD);
-			muro_izda = true;
-		} else if ((sensores.terreno[1] != 'T' || sensores.terreno[1] != 'P') && muro_izda) {
-			accion.push_back(actTURN_SR);
-			muro_izda = false;
-		} else if (condicion3) {
-			accion.push_back(actFORWARD);
-		} else if (condicion1 && condicion2) {
-			accion.push_back(actFORWARD);
-		} else if(!girar_derecha) {
-			accion.push_back(actTURN_SL);
-			girar_derecha = (rand()%2 == 0);
-		}  else {
-			accion.push_back(actTURN_SR);
-			girar_derecha = (rand()%2 == 0);
-		}
-*/
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-
-		bool condicion1 = veces < 3;
-		bool casilla_libre = sensores.superficie[2] == '_';
-		bool condicion2 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
-		bool condicion3 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
-
 		bool salir_entre_muros_dcha = sensores.terreno[3] == 'M' && (sensores.terreno[7] == 'T' ||  sensores.terreno[7] == 'S' || (sensores.terreno[7] == 'A' && bikini) || (sensores.terreno[7] == 'B' && zapatillas));
 		bool salir_entre_muros_izda = sensores.terreno[1] == 'M' && (sensores.terreno[5] == 'T' ||  sensores.terreno[5] == 'S' || (sensores.terreno[5] == 'A' && bikini) || (sensores.terreno[5] == 'B' && zapatillas));
 
 		if (sensores.terreno[0] == 'X' && sensores.bateria < 4900) {
-			accion.push_back(actIDLE);
+			if (sensores.vida < sensores.bateria) {
+				if (condicion2 || condicion3) {
+					accion.push_back(actFORWARD);
+				} else {
+					if(!girar_derecha) {
+						accion.push_back(actTURN_SL);
+						girar_derecha = (rand()%2 == 0);
+					}  else {
+						accion.push_back(actTURN_SR);
+						girar_derecha = (rand()%2 == 0);
+						giros_acumulados++;
+					}
+				}
+					
+			} else {
+				accion.push_back(actIDLE);
+			}
 		} else if (salir_entre_muros_izda && sensores.terreno[2] != 'M' && casilla_libre) {
 			accion.push_back(actFORWARD);
 			accion.push_back(actTURN_SL);
@@ -939,12 +874,10 @@ Action ComportamientoJugador::think(Sensores sensores){
 		} else if(!girar_derecha) {
 			accion.push_back(actTURN_SL);
 			girar_derecha = (rand()%2 == 0);
-			cout << "derecha: " << giros_acumulados << endl;
 		}  else {
 			accion.push_back(actTURN_SR);
 			girar_derecha = (rand()%2 == 0);
 			giros_acumulados++;
-			cout << "izquierda: " << giros_acumulados << endl;
 		}
 	}
 
