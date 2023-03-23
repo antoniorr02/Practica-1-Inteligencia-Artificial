@@ -34,6 +34,9 @@ class ComportamientoJugador : public Comportamiento{
       zapatillas = false;
       accion.push_back(actIDLE);
       vector<Action> accion;
+      giros_acumulados = 0;
+      muro_dcha = false;
+      muro_izda = false;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -52,6 +55,8 @@ class ComportamientoJugador : public Comportamiento{
   int ** matrizPaso;
   bool bikini, zapatillas;
   vector<Action> accion;
+  int giros_acumulados;
+  bool muro_dcha, muro_izda;
 };
 
 #endif
