@@ -395,10 +395,148 @@ Action ComportamientoJugador::think(Sensores sensores){
 		bien_situado = true;
 	}
 
-	int veces = 0;
+	int veces[3];
 	if (bien_situado){
 		PonerTerrenoEnMatriz(sensores.terreno, current_state, mapaResultado);
-
+		switch(current_state.brujula) {
+			case norte:
+				try {
+					veces[0] = matrizPaso[current_state.fil-1][current_state.col-1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil-1][current_state.col];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil-1][current_state.col+1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case noreste:
+				try {
+					veces[0] = matrizPaso[current_state.fil-1][current_state.col];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil-1][current_state.col+1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil][current_state.col+1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case este:
+				try {
+					veces[0] = matrizPaso[current_state.fil-1][current_state.col+1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil][current_state.col+1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil+1][current_state.col+1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case sureste:
+				try {
+					veces[0] = matrizPaso[current_state.fil][current_state.col+1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil+1][current_state.col+1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil+1][current_state.col];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case sur:
+				try {
+					veces[0] = matrizPaso[current_state.fil+1][current_state.col+1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil+1][current_state.col];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil+1][current_state.col-1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case suroeste:
+				try {
+					veces[0] = matrizPaso[current_state.fil+1][current_state.col];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil+1][current_state.col-1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil][current_state.col-1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case oeste:
+				try {
+					veces[0] = matrizPaso[current_state.fil+1][current_state.col-1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil][current_state.col-1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil-1][current_state.col-1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case noroeste:
+				try {
+					veces[0] = matrizPaso[current_state.fil][current_state.col-1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil-1][current_state.col-1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil-1][current_state.col];		
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+		}
+	/*
 		switch(current_state.brujula) {
 			case norte:
 				veces = matrizPaso[current_state.fil-1][current_state.col];
@@ -425,6 +563,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 				veces = matrizPaso[current_state.fil-1][current_state.col-1];
 			break;
 		}
+	*/
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -815,24 +954,20 @@ Action ComportamientoJugador::think(Sensores sensores){
 
 	if (accion.size() == 0) {
 
-		bool condicion1 = veces < 3;
+		//bool condicion1 = veces < 3;
 		bool casilla_libre = sensores.superficie[2] == '_';
-		bool condicion2 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
-		bool condicion3 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
-
-		/////////// APARENTEMENTE NO ES BUENA IDEA POR LOS RESULTADOS
-		/*if (!casilla_libre) {
-			accion.push_back(actIDLE);
-		} // Si hay aldeano o lobo no moverse, esperar que se quite.
-		*/
-		///////////////////////////////////////////////////////////////
-
+		bool casilla_libreA = sensores.superficie[1] == '_';
+		bool casilla_libreB = sensores.superficie[3] == '_';
+		bool condicion1 = (sensores.terreno[2] == 'T' || sensores.terreno[2] == 'S' || sensores.terreno[2] == 'G' || (sensores.terreno[2] == 'A' && bikini) || (sensores.terreno[2] == 'B' && zapatillas)) && casilla_libre;
+		bool condicion1a = (sensores.terreno[1] == 'T' || sensores.terreno[1] == 'S' || sensores.terreno[1] == 'G' || (sensores.terreno[1] == 'A' && bikini) || (sensores.terreno[1] == 'B' && zapatillas)) && casilla_libreA;
+		bool condicion1b = (sensores.terreno[3] == 'T' || sensores.terreno[3] == 'S' || sensores.terreno[3] == 'G' || (sensores.terreno[3] == 'A' && bikini) || (sensores.terreno[3] == 'B' && zapatillas)) && casilla_libreB;
+		bool condicion2 = (sensores.terreno[2] == 'K' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'D') && casilla_libre;
 		bool salir_entre_muros_dcha = sensores.terreno[3] == 'M' && (sensores.terreno[7] == 'T' ||  sensores.terreno[7] == 'S' || (sensores.terreno[7] == 'A' && bikini) || (sensores.terreno[7] == 'B' && zapatillas));
 		bool salir_entre_muros_izda = sensores.terreno[1] == 'M' && (sensores.terreno[5] == 'T' ||  sensores.terreno[5] == 'S' || (sensores.terreno[5] == 'A' && bikini) || (sensores.terreno[5] == 'B' && zapatillas));
 
 		if (sensores.terreno[0] == 'X' && sensores.bateria < 4900) {
 			if (sensores.vida < sensores.bateria) {
-				if (condicion2 || condicion3) {
+				if (condicion1 || condicion2) {
 					accion.push_back(actFORWARD);
 				} else {
 					if(!girar_derecha) {
@@ -867,10 +1002,34 @@ Action ComportamientoJugador::think(Sensores sensores){
 			accion.push_back(actFORWARD);
 			accion.push_back(actFORWARD);
 			accion.push_back(actFORWARD);
-		} else if (condicion3) {
+		} else if (condicion2) {
 			accion.push_back(actFORWARD);
-		} else if (condicion1 && condicion2) {
-			accion.push_back(actFORWARD);
+		} else if (condicion1 || condicion1a || condicion1b) {
+			int casilla_optima = 1;
+			int valor = 3;
+			for (int i = 0; i < 3; i++) {
+				if (valor > veces[i]) {
+					casilla_optima = i;
+				}
+			}
+			if (casilla_optima == 0 && condicion1a) {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			} else if (casilla_optima == 1 && condicion1) {
+				accion.push_back(actFORWARD);
+			} else if (casilla_optima == 2 && condicion1b) {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			} else if (condicion1 && veces[1] < 3) {
+				accion.push_back(actFORWARD);
+			} else if(!girar_derecha) {
+				accion.push_back(actTURN_SL);
+				girar_derecha = (rand()%2 == 0);
+			}  else {
+				accion.push_back(actTURN_SR);
+				girar_derecha = (rand()%2 == 0);
+				giros_acumulados++;
+			}
 		} else if(!girar_derecha) {
 			accion.push_back(actTURN_SL);
 			girar_derecha = (rand()%2 == 0);
