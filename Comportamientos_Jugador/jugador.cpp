@@ -951,6 +951,46 @@ Action ComportamientoJugador::think(Sensores sensores){
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*
+	 * Agrupo en cuadrantes de 5*5, ya que son mcm de 30,50, 75 y 100, y en cada agrupación - cuadrante, almaceno el número de  casillas desconocidas '?'
+	 * en una matriz auxiliar, con ello, más tarde redirigiré eventualmente al robot de forma que se oriente a zonas con muchas casillas menos sin visitar.
+	 */
+	int num_desconocidas[num_cuadrantes*num_cuadrantes] = {0};
+	int fila = 0;
+	for (int n = 0; n < num_cuadrantes*num_cuadrantes; n++) {
+		if ((n)%num_cuadrantes == 0 && n > 0 && n+5 < num_cuadrantes*num_cuadrantes) {fila+=5;}
+		for (int i = fila; i < fila + 5; i++) {
+			for (int j = (n%num_cuadrantes)*5; j < ((n%num_cuadrantes)*5) + 5; j++) {
+				//cout << "n: " << n << " i: " << i << " j: " << j << endl;
+				if (mapaResultado[i][j] == '?') {
+					num_desconocidas[n]++;
+				}
+			}
+		}
+		if(0==1){
+			cout << "a";
+		}
+	}
+
+	int cont = 0;
+	for (int i = 0; i < num_cuadrantes; i++) {
+		for (int j = 0; j < num_cuadrantes; j++) {
+			matrizCuadrantesNoVisitados[i][j] = num_desconocidas[cont];
+			cont++;
+		}
+	}
+
+	// Con esto podemos ir viendo como se actualiza la matriz de casillas visitadas.
+	cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
+	for (int i = 0; i < num_cuadrantes; i++) {
+		for (int j = 0; j < num_cuadrantes; j++) {
+			cout << matrizCuadrantesNoVisitados[i][j] << " ";
+		}
+		cout << endl;
+	}
+	
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (accion.size() == 0) {
 
@@ -979,7 +1019,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 						giros_acumulados++;
 					}
 				}
-					
 			} else {
 				accion.push_back(actIDLE);
 			}
@@ -1003,6 +1042,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 			accion.push_back(actFORWARD);
 			accion.push_back(actFORWARD);
 		} else if (condicion2) {
+			accion.push_back(actFORWARD);
+		}  else if (condicion1 && veces[1] < 1) { // Ver que valor le doy a veces[1]
 			accion.push_back(actFORWARD);
 		} else if (condicion1 || condicion1a || condicion1b) {
 			int casilla_optima = 1;

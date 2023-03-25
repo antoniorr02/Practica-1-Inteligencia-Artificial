@@ -30,13 +30,21 @@ class ComportamientoJugador : public Comportamiento{
           matrizPaso[i][j] = 0;
         }
       }
+      num_cuadrantes = size/5;
+      matrizCuadrantesNoVisitados = new int*[num_cuadrantes];
+      for (int i = 0; i < num_cuadrantes; i++) {
+            matrizCuadrantesNoVisitados[i] = new int[num_cuadrantes];
+      }
+      for (unsigned int i = 0; i < num_cuadrantes; i++) {
+        for (unsigned int j = 0; j < num_cuadrantes; j++) {
+          matrizCuadrantesNoVisitados[i][j] = 0;
+        }
+      }
       bikini = false;
       zapatillas = false;
       accion.push_back(actIDLE);
       vector<Action> accion;
       giros_acumulados = 0;
-      muro_dcha = false;
-      muro_izda = false;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -53,10 +61,10 @@ class ComportamientoJugador : public Comportamiento{
   bool girar_derecha;
   bool bien_situado;
   int ** matrizPaso;
+  int ** matrizCuadrantesNoVisitados;
   bool bikini, zapatillas;
   vector<Action> accion;
-  int giros_acumulados;
-  bool muro_dcha, muro_izda;
+  int giros_acumulados, num_cuadrantes;
 };
 
 #endif
