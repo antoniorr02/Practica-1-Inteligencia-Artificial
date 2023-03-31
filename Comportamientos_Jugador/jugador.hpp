@@ -40,11 +40,23 @@ class ComportamientoJugador : public Comportamiento{
           matrizCuadrantesNoVisitados[i][j] = 0;
         }
       }
+      matrizDesubicado = new char*[(size*2)+1];
+      for (int i = 0; i < (size*2)+1; i++) {
+            matrizDesubicado[i] = new char[(size*2)+1];
+      }
+      for (unsigned int i = 0; i < (size*2)+1; i++) {
+        for (unsigned int j = 0; j < (size*2)+1; j++) {
+          matrizDesubicado[i][j] = '?';
+        }
+      }
       bikini = false;
       zapatillas = false;
       accion.push_back(actIDLE);
       vector<Action> accion;
       giros_acumulados = 0;
+      filaMatrizDesubicado = size;
+      colMatrizDesubicado = size;
+      brujulaDesorientada = 1;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -62,6 +74,8 @@ class ComportamientoJugador : public Comportamiento{
   bool bien_situado;
   int ** matrizPaso;
   int ** matrizCuadrantesNoVisitados;
+  char ** matrizDesubicado;
+  int filaMatrizDesubicado, colMatrizDesubicado, brujulaDesorientada;
   bool bikini, zapatillas;
   vector<Action> accion;
   int giros_acumulados, num_cuadrantes;

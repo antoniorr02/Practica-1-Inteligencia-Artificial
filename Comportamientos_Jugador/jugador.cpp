@@ -255,7 +255,236 @@ Action ComportamientoJugador::think(Sensores sensores){
 		break;
 	}
 
-	accion.erase(accion.begin());
+		///////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////
+	if (!bien_situado) {
+
+		//////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////
+			switch(last_action) {
+				case actFORWARD:
+					switch(brujulaDesorientada) {
+						case 0:
+							filaMatrizDesubicado--;
+							cout << "Avanza hacia el norte" << endl;
+						break;
+						case 1:
+							filaMatrizDesubicado--;
+							colMatrizDesubicado++;
+							cout << "Avanza hacia el noreste" << endl;
+						break;
+						case 2:
+							colMatrizDesubicado++;
+							cout << "Avanza hacia el este" << endl;
+						break;
+						case 3:
+							filaMatrizDesubicado++;
+							colMatrizDesubicado++;
+							cout << "Avanza hacia el sureste" << endl;
+						break;
+						case 4:
+							filaMatrizDesubicado++;
+							cout << "Avanza hacia el sur" << endl;
+						break;
+						case 5:
+							filaMatrizDesubicado++;
+							colMatrizDesubicado--;
+							cout << "Avanza hacia el suroeste" << endl;
+						break;
+						case 6:
+							colMatrizDesubicado--;
+							cout << "Avanza hacia el oeste" << endl;
+						break;
+						case 7:
+							filaMatrizDesubicado--;
+							colMatrizDesubicado--;
+							cout << "Avanza hacia el noroeste" << endl;
+						break;
+					}
+				break;
+				case actTURN_SL:
+					a = brujulaDesorientada;
+					a = (a+7)%8;
+					brujulaDesorientada = a;
+				break;
+				case actTURN_SR:
+					a = brujulaDesorientada;
+					a = (a+1)%8;
+					brujulaDesorientada = a;
+				break;
+				case actTURN_BL:
+					a = brujulaDesorientada;
+					a = (a+5)%8;
+					brujulaDesorientada = a;
+				break;
+				case actTURN_BR:
+					a = brujulaDesorientada;
+					a = (a+3)%8;
+					brujulaDesorientada = a;
+				break;
+			}
+
+		/////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////
+
+		switch(brujulaDesorientada) {
+			case 0: //Norte
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-1] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+1] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-2] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-1] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+1] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+2] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = sensores.terreno[15];
+				cout << "Esta mirando hacia 0" << endl;
+			break;
+			case 1: //Noreste
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+1] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+2] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+1] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+2] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+3] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+3] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = sensores.terreno[15];
+				cout << "Esta mirando hacia 1" << endl;
+			break;
+			case 2: //Este
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+2] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+2] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+3] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+3] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+3] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+3] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = sensores.terreno[15];
+				cout << "Esta mirando hacia 2" << endl;
+			break;
+			case 3: //sureste
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+2] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+1] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+3] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+3] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+2] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+1] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = sensores.terreno[15];
+				cout << "Esta mirando hacia 3" << endl;
+			break;
+			case 4: //sur
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+1] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-1] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+2] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+1] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-1] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-2] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = sensores.terreno[15];
+				cout << "Esta mirando hacia 4" << endl;
+			break;
+			case 5: //suroeste
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-1] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-2] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-1] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-2] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-3] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-3] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = sensores.terreno[15];
+				cout << "Esta mirando hacia 5" << endl;
+			break;
+			case 6: //oeste
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-2] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-2] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-3] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-3] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-3] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-3] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = sensores.terreno[15];
+				cout << "Esta mirando hacia 6" << endl;
+			break;
+			case 7: //noroeste
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = sensores.terreno[1];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = sensores.terreno[2];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = sensores.terreno[3];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = sensores.terreno[4];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-2] = sensores.terreno[5];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = sensores.terreno[6];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-1] = sensores.terreno[7];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = sensores.terreno[8];
+				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = sensores.terreno[9];
+				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-3] = sensores.terreno[10];
+				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-3] = sensores.terreno[11];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = sensores.terreno[12];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-2] = sensores.terreno[13];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-1] = sensores.terreno[14];
+				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = sensores.terreno[15];
+				cout << "Esta mirando hacia 7" << endl;
+			break;
+		}
+	}
+	///////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////
+	accion.erase(accion.begin()); // Borramos la accion que se ha realizado.
 
 	//Decisiones
 	
@@ -393,7 +622,31 @@ Action ComportamientoJugador::think(Sensores sensores){
 		current_state.col= sensores.posC;
 		current_state.brujula = sensores.sentido;
 		bien_situado = true;
+		if (sensores.nivel > 0) {
+			int fila_inicial_traspaso = filaMatrizDesubicado - current_state.fil;
+			int col_inicial_traspaso = colMatrizDesubicado - current_state.col;
+			int cont_fila = 0, cont_col = 0;
+			for (int i = fila_inicial_traspaso; i < fila_inicial_traspaso + mapaResultado.size(); i++){
+				for (int j = col_inicial_traspaso; j < col_inicial_traspaso + mapaResultado.size(); j++){
+					if (matrizDesubicado[i][j] != '?') {
+						mapaResultado[cont_fila][cont_col] = matrizDesubicado[i][j];
+					}
+					cont_col++;
+				}
+				cont_col = 0;
+				cont_fila++;
+			}
+			// Borramos la matriz auxiliar por si perdemos la orientación y tenemos que volver a utilizarla
+			/*for (int i = 0; i < mapaResultado.size()*2 + 1; i++){
+				for (int j = 0; j < mapaResultado.size()*2 + 1; j++){
+					matrizDesubicado[i][j] = '?';
+				}
+			}
+			brujulaDesorientada = 0;
+			*///DUDA: Si perdemos la orientación por morir reaparecemos mirando al norte?
+		}
 	}
+
 
 	int veces[3];
 	if (bien_situado){
@@ -967,9 +1220,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 				}
 			}
 		}
-		if(0==1){
-			cout << "a";
-		}
 	}
 
 	int cont = 0;
@@ -1081,7 +1331,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 		}
 	}
 
-	if (giros_acumulados > 15) {
+	if (giros_acumulados > 5) { // Es posible que sea necesario que sea más restrictivo.
 		if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
 			accion.clear();
 			accion.push_back(actFORWARD);
