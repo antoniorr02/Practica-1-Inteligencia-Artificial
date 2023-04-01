@@ -637,13 +637,13 @@ Action ComportamientoJugador::think(Sensores sensores){
 				cont_fila++;
 			}
 			// Borramos la matriz auxiliar por si perdemos la orientación y tenemos que volver a utilizarla
-			/*for (int i = 0; i < mapaResultado.size()*2 + 1; i++){
+			for (int i = 0; i < mapaResultado.size()*2 + 1; i++){
 				for (int j = 0; j < mapaResultado.size()*2 + 1; j++){
 					matrizDesubicado[i][j] = '?';
 				}
 			}
 			brujulaDesorientada = 0;
-			*///DUDA: Si perdemos la orientación por morir reaparecemos mirando al norte?
+			//DUDA: Si perdemos la orientación por morir reaparecemos mirando al norte?
 		}
 	}
 
@@ -1364,121 +1364,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 	}  // ME CAGO EN SU PUTA MADRE.
 
 */
-
-
-	//bool opcion1 = (sensores.terreno[1] == 'T' or sensores.terreno[1] == 'S' or sensores.terreno[1] == 'G' or (sensores.terreno[1] == 'A' && bikini == true)) and sensores.superficie[1] == '_';
-	//bool opcion2 = (sensores.terreno[2] == 'T' or sensores.terreno[2] == 'S' or sensores.terreno[2] == 'G' or (sensores.terreno[2] == 'A' && bikini == true)) and sensores.superficie[2] == '_';
-	//bool opcion3 = (sensores.terreno[3] == 'T' or sensores.terreno[3] == 'S' or sensores.terreno[3] == 'G' or (sensores.terreno[3] == 'A' && bikini == true)) and sensores.superficie[3] == '_';
-	/*bool opcion1 = (sensores.terreno[1] != 'P' && sensores.terreno[1] != 'M' && (sensores.terreno[1] == 'A' && bikini == false) && (sensores.terreno[1] == 'B' && zapatillas == false)) && sensores.superficie[1] == '_';
-	bool opcion2 = (sensores.terreno[2] != 'P' && sensores.terreno[2] != 'M' && (sensores.terreno[2] == 'A' && bikini == false) && (sensores.terreno[2] == 'B' && zapatillas == false)) && sensores.superficie[2] == '_';
-	bool opcion3 = (sensores.terreno[3] != 'P' && sensores.terreno[3] != 'M' && (sensores.terreno[3] == 'A' && bikini == false) && (sensores.terreno[3] == 'B' && zapatillas == false)) && sensores.superficie[3] == '_';
-
-	int valor[3];
-	bool seguir_buscando = true;
-
-	if (avanzar_prioritario || sensores.terreno[0] == sensores.terreno[1] == sensores.terreno[2]) {
-		accion = actFORWARD;
-		avanzar_prioritario = false;
-		seguir_buscando = false;
-	} else {
-		if (sensores.terreno[2] == 'B' || sensores.terreno[2] == 'Z' || sensores.terreno[2] == 'X' || sensores.terreno[2] == 'G') {
-			accion = actFORWARD;
-			seguir_buscando = false;
-		}
-		if ((sensores.terreno[1] == 'B' || sensores.terreno[1] == 'Z' || sensores.terreno[1] == 'X' || sensores.terreno[1] == 'G') and seguir_buscando) {
-			accion = actTURN_SR;
-			avanzar_prioritario = true;
-			seguir_buscando = false;
-		}
-		if ((sensores.terreno[3] == 'B' || sensores.terreno[3] == 'Z' || sensores.terreno[3] == 'X' || sensores.terreno[3] == 'G') and seguir_buscando) {
-			accion = actTURN_SL;
-			avanzar_prioritario = true;
-			seguir_buscando = false;
-		}
-
-		if (seguir_buscando) {
-					if(opcion1 || opcion2 || opcion3) {
-						switch(current_state.brujula) {
-							case norte:
-								valor[0] = matrizPaso[current_state.fil-1][current_state.col-1];
-								valor[1] = matrizPaso[current_state.fil-1][current_state.col];
-								valor[2] = matrizPaso[current_state.fil-1][current_state.col+1];
-							break;
-							case noreste:
-								valor[0] = matrizPaso[current_state.fil-1][current_state.col];
-								valor[1] = matrizPaso[current_state.fil-1][current_state.col+1];
-								valor[2] = matrizPaso[current_state.fil][current_state.col+1];
-							break;
-							case este:
-								valor[0] = matrizPaso[current_state.fil-1][current_state.col+1];
-								valor[1] = matrizPaso[current_state.fil][current_state.col+1];
-								valor[2] = matrizPaso[current_state.fil+1][current_state.col+1];
-							break;
-							case sureste:
-								valor[0] = matrizPaso[current_state.fil][current_state.col+1];
-								valor[1] = matrizPaso[current_state.fil+1][current_state.col+1];
-								valor[2] = matrizPaso[current_state.fil+1][current_state.col];
-							break;
-							case sur:
-								valor[0] = matrizPaso[current_state.fil+1][current_state.col+1];
-								valor[1] = matrizPaso[current_state.fil+1][current_state.col];
-								valor[2] = matrizPaso[current_state.fil+1][current_state.col-1];
-							break;
-							case suroeste:
-								valor[0] = matrizPaso[current_state.fil+1][current_state.col];
-								valor[1] = matrizPaso[current_state.fil+1][current_state.col-1];
-								valor[2] = matrizPaso[current_state.fil][current_state.col-1];
-							break;
-							case oeste:
-								valor[0] = matrizPaso[current_state.fil+1][current_state.col-1];
-								valor[1] = matrizPaso[current_state.fil][current_state.col-1];
-								valor[2] = matrizPaso[current_state.fil-1][current_state.col-1];
-							break;
-							case noroeste:
-								valor[0] = matrizPaso[current_state.fil][current_state.col-1];
-								valor[1] = matrizPaso[current_state.fil-1][current_state.col-1];
-								valor[2] = matrizPaso[current_state.fil-1][current_state.col];		
-							break;
-						}
-						if (!opcion1) {valor[0] = 1000;}
-						if (!opcion2) {valor[1] = 1000;}
-						if (!opcion3) {valor[2] = 1000;}
-						int optimo = 0;
-						for (int i = 0; i < 2; i++) {
-							if (valor[i] > valor[i++]) {
-								optimo = i++;
-							}
-						}
-						switch (optimo) {
-							case 0:
-								if(!girar_derecha) {
-									accion = actTURN_SL;
-									girar_derecha = (rand()%2 ==0);
-								} else {
-									if (opcion2)
-										accion = actFORWARD;
-									else
-										accion = actTURN_SR;
-								}
-							break;
-							case 1:
-								accion = actFORWARD;
-							break;
-							case 2: 
-								accion = actTURN_SR;
-							break;
-						}
-
-					} else if(!girar_derecha) {
-						accion = actTURN_SL;
-						girar_derecha = (rand()%2 ==0);
-					} else {
-						accion = actTURN_SR;
-						girar_derecha = (rand()%2 ==0);
-					}
-		}
-	}*/
-
 
 	// Devolver posicion - Determinar el efecto de la ultima accion enviada
 	last_action = accion[0];
