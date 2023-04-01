@@ -56,7 +56,7 @@ class ComportamientoJugador : public Comportamiento{
       giros_acumulados = 0;
       filaMatrizDesubicado = size;
       colMatrizDesubicado = size;
-      brujulaDesorientada = 1;
+      brujulaDesorientada = 0;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
