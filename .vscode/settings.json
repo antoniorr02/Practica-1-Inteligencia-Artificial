@@ -1,16 +1,6 @@
 {
     "files.associations": {
-        "memory": "cpp",
-        "random": "cpp",
-        "optional": "cpp",
-        "ostream": "cpp",
-        "iostream": "cpp",
-        "deque": "cpp",
-        "string": "cpp",
-        "vector": "cpp",
-        "array": "cpp",
-        "string_view": "cpp",
-        "initializer_list": "cpp",
-        "utility": "cpp"
+        "iosfwd": "cpp",
+        "ostream": "cpp"
     }
 }
