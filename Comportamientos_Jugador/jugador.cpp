@@ -219,17 +219,6 @@ Action ComportamientoJugador::think(Sensores sensores){
 					current_state.col--;
 				break;
 			}
-			// Voy añadiendo 1 a la matriz de paso cada vez q paso por la misma casilla
-			// Luego buscaré dar prioridad a las casillas no visitadas.
-			if (bien_situado && sensores.posF > 0 && sensores.posC > 0 && sensores.posF < mapaResultado.size() && sensores.posC < mapaResultado.size()) {
-				matrizPaso[sensores.posF][sensores.posC] += 1;
-				for (unsigned int i = 0; i < sensores.terreno.size(); i++) {
-					for (unsigned int j = 0; j < sensores.terreno.size(); j++) {
-						cout << matrizPaso[i][j] << " ";
-					}
-					cout << endl;
-				}
-			}
 		break;
 		case actTURN_SL:
 			a = current_state.brujula;
@@ -622,6 +611,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 		current_state.col= sensores.posC;
 		current_state.brujula = sensores.sentido;
 		bien_situado = true;
+
 		if (sensores.nivel > 0) {
 			int fila_inicial_traspaso = filaMatrizDesubicado - current_state.fil;
 			int col_inicial_traspaso = colMatrizDesubicado - current_state.col;
@@ -644,6 +634,19 @@ Action ComportamientoJugador::think(Sensores sensores){
 			}
 			brujulaDesorientada = 0;
 			//DUDA: Si perdemos la orientación por morir reaparecemos mirando al norte?
+		}
+	}
+
+
+	// Voy añadiendo 1 a la matriz de paso cada vez q paso por la misma casilla
+	// Luego buscaré dar prioridad a las casillas no visitadas.
+	if (bien_situado) {
+		matrizPaso[current_state.fil][current_state.col] += 1;
+		for (unsigned int i = 0; i < sensores.terreno.size(); i++) {
+			for (unsigned int j = 0; j < sensores.terreno.size(); j++) {
+				cout << matrizPaso[i][j] << " ";
+			}
+			cout << endl;
 		}
 	}
 
@@ -1272,18 +1275,18 @@ Action ComportamientoJugador::think(Sensores sensores){
 			} else {
 				accion.push_back(actIDLE);
 			}
-		} else if (salir_entre_muros_izda && sensores.terreno[2] != 'M' && casilla_libre) {
+		} else if (salir_entre_muros_izda && sensores.terreno[2] != 'M' && casilla_libre && veces[1] < 3) {
 			accion.push_back(actFORWARD);
 			accion.push_back(actTURN_SL);
 			accion.push_back(actFORWARD);
 			if(mapaResultado.size() >= 75){accion.push_back(actTURN_SL);}
-		} else if (salir_entre_muros_dcha && sensores.terreno[2] != 'M' && casilla_libre) {
+		} else if (salir_entre_muros_dcha && sensores.terreno[2] != 'M' && casilla_libre && veces[1] < 3) {
 			accion.push_back(actFORWARD);
 			accion.push_back(actTURN_SR);
 			accion.push_back(actFORWARD);
 			if(mapaResultado.size() >= 75) {accion.push_back(actTURN_SR);}
 		} else if (((sensores.terreno[5] == 'M' && sensores.terreno[7] == 'M' && sensores.terreno[6] != 'M' && sensores.terreno[2] != 'M') ||
-					(sensores.terreno[5] == 'P' && sensores.terreno[7] == 'P' && sensores.terreno[6] != 'P' && sensores.terreno[2] != 'P')) && casilla_libre ) { // Salir entre muros
+					(sensores.terreno[5] == 'P' && sensores.terreno[7] == 'P' && sensores.terreno[6] != 'P' && sensores.terreno[2] != 'P')) && casilla_libre) { // Salir entre muros
 			accion.push_back(actFORWARD);
 			accion.push_back(actFORWARD);
 		} else if (((sensores.terreno[11] == 'M' && sensores.terreno[13] == 'M' && sensores.terreno[12] != 'M' && sensores.terreno[2] != 'M' && sensores.terreno[6] != 'M') ||
