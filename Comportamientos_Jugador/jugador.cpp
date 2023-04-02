@@ -647,6 +647,936 @@ void TraspasarDesconocidoAMapa(vector<vector<unsigned char>> &mapaResultado, cha
 	}
 }
 
+/**
+ * @brief Buscamos las casillas especiales dentro del campo de visión del agente.
+ * 
+ * @param terreno 
+ * @param num_acciones 
+ * @param bikini 
+ * @param zapatillas 
+ * @param bateria 
+ * @param punto_bikini 
+ * @param punto_zapatillas 
+ * @param punto_recarga 
+ */
+void BuscarCasillasEspeciales(const vector<unsigned char> & terreno, int num_acciones, bool bikini, bool zapatillas, int bateria, int & punto_bikini, int & punto_zapatillas, int & punto_recarga) {
+	if ((!bikini || !zapatillas) && num_acciones == 0) {
+		for (int i = 1; i < terreno.size(); i++) {
+			if (terreno[i] == 'K') {
+				punto_bikini = i;
+			}
+			if (terreno[i] == 'D') {
+				punto_zapatillas = i;
+			}
+		}
+	}
+	if (bateria < 3000) {
+		for (int i = 1; i < terreno.size(); i++) {
+			if (terreno[i] == 'X') {
+				punto_recarga = i;
+			}
+		}
+	}
+}
+
+/**
+ * @brief Se define el comportamiento del agente para ir hacia el punto que contiene el bikini.
+ * 
+ * @param terreno 
+ * @param accion 
+ * @param punto_bikini 
+ */
+void IrHaciaPuntoBikini(const vector<unsigned char> & terreno, vector<Action> accion, const int punto_bikini) {
+	switch (punto_bikini) {
+		//// Inicio hacia delante.
+		case 2:
+			accion.push_back(actFORWARD);
+		break;
+		case 6:
+			if (terreno[2] != 'M' && terreno[2] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 12:
+			// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+			if (terreno[2] != 'M' && terreno[2] != 'P' && terreno[6] != 'M' && terreno[6] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		//// Inicio a la derecha
+		case 3:
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		break;
+		case 8:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 15:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[8] != 'M' && terreno[8] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 7:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 13:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 14:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		///// Inicio a la izquierda
+		case 1:
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		break;
+		case 4:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);				
+			}
+		break;
+		case 9:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[4] != 'M' && terreno[4] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 5:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 11:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 10:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+	}
+	
+}
+
+/**
+ * @brief Se define el comportamiento del agente para ir hacia el punto que contiene las zapatillas.
+ * 
+ * @param terreno 
+ * @param accion 
+ * @param punto_zapatillas 
+ */
+void IrHaciaPuntoZapatillas(const vector<unsigned char> & terreno, vector<Action> accion, const int punto_zapatillas) {
+	switch (punto_zapatillas) {
+		//// Inicio hacia delante.
+		case 2:
+			accion.push_back(actFORWARD);
+		break;
+		case 6:
+			if (terreno[2] != 'M' && terreno[2] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 12:
+			// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+			if (terreno[2] != 'M' && terreno[2] != 'P' && terreno[6] != 'M' && terreno[6] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		//// Inicio a la derecha
+		case 3:
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		break;
+		case 8:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 15:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[8] != 'M' && terreno[8] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 7:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 13:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 14:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		///// Inicio a la izquierda
+		case 1:
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		break;
+		case 4:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);				
+			}
+		break;
+		case 9:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[4] != 'M' && terreno[4] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 5:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 11:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 10:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+	}
+}
+
+/**
+ * @brief Se define el comportamiento del agente para ir hacia el punto de recarga.
+ * 
+ * @param terreno 
+ * @param accion 
+ * @param punto_recarga 
+ */
+void IrHaciaPuntoRecarga(const vector<unsigned char> & terreno, vector<Action> accion, const int punto_recarga) {
+	switch (punto_recarga) {
+		//// Inicio hacia delante.
+		case 2:
+			accion.push_back(actFORWARD);
+		break;
+		case 6:
+			if (terreno[2] != 'M' && terreno[2] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 12:
+			// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+			if (terreno[2] != 'M' && terreno[2] != 'P' && terreno[6] != 'M' && terreno[6] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		//// Inicio a la derecha
+		case 3:
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		break;
+		case 8:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 15:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[8] != 'M' && terreno[8] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 7:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 13:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 14:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		///// Inicio a la izquierda
+		case 1:
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		break;
+		case 4:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);				
+			}
+		break;
+		case 9:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[4] != 'M' && terreno[4] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 5:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 11:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 10:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+	}
+}
+
+/**
+ * @brief Calcula el número de casillas desconocidas en cada uno de los cuadrantes 5x5.
+ * 
+ * @param mapaResultado 
+ * @param matrizCuadrantesNoVisitados 
+ * @param num_cuadrantes 
+ */
+void NumDesconocidasPorCuadrante(vector<vector<unsigned char>> &mapaResultado, int ** matrizCuadrantesNoVisitados, int num_cuadrantes) {
+	/*
+		 * Agrupo en cuadrantes de 5*5, ya que son mcm de 30,50, 75 y 100, y en cada agrupación - cuadrante, almaceno el número de  casillas desconocidas '?'
+		 * en una matriz auxiliar, con ello, más tarde redirigiré eventualmente al robot de forma que se oriente a zonas con muchas casillas menos sin visitar.
+		 */
+		int num_desconocidas[num_cuadrantes*num_cuadrantes] = {0};
+		int fila = 0;
+		for (int n = 0; n < num_cuadrantes*num_cuadrantes; n++) {
+			if ((n)%num_cuadrantes == 0 && n > 0 && n+5 < num_cuadrantes*num_cuadrantes) {fila+=5;}
+			for (int i = fila; i < fila + 5; i++) {
+				for (int j = (n%num_cuadrantes)*5; j < ((n%num_cuadrantes)*5) + 5; j++) {
+					if (mapaResultado[i][j] == '?') {
+						num_desconocidas[n]++;
+					}
+				}
+			}
+		}
+
+		int cont = 0;
+		for (int i = 0; i < num_cuadrantes; i++) {
+			for (int j = 0; j < num_cuadrantes; j++) {
+				matrizCuadrantesNoVisitados[i][j] = num_desconocidas[cont];
+				cont++;
+			}
+		}
+}
+
+/**
+ * @brief Determinamos cuál es cuadrante con mayor número de casillas desconocidas y determinamos hacia cuál ir.
+ * 
+ * @param st 
+ * @param matrizCuadrantesNoVisitados 
+ * @param num_cuadrantes 
+ * @param cuadranteFijado 
+ * @return int 
+ */
+int CuadranteOptimo(state &st, int ** matrizCuadrantesNoVisitados, int num_cuadrantes, bool &cuadranteFijado) {
+	// Ahora queremos ver el cuadrante en el que estamos situados en concreto:
+	int filaCuadrantes, colCuadrantes;
+	if (st.fil < 5) {
+		filaCuadrantes = 0;
+	} else {
+		filaCuadrantes = (st.fil / 5) - 1;
+	}
+	if (st.col < 5) {
+		colCuadrantes = 0;
+	} else {
+		colCuadrantes = (st.col / 5) - 1;
+	}
+
+	// Una vez sabemos en que cuadrante estamos ubicados, comprobaremos si alguno de los contiguos tiene 
+	// una proporción de muros contiene una proporción mucho mayor de desconocidos.
+	int cuadrante[8] = {0};
+	if (filaCuadrantes > 0 && colCuadrantes > 0) {
+		cuadrante[0] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes-1];
+	} else {
+		cuadrante[0] = -1;
+	}
+	if (filaCuadrantes > 0) {
+		cuadrante[1] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes];
+	} else {
+		cuadrante[1] = -1;
+	}
+	if (filaCuadrantes > 0 && colCuadrantes < num_cuadrantes) {
+		cuadrante[2] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes+1];
+	} else {
+		cuadrante[2] = -1;
+	}
+	if (colCuadrantes > 0) {
+		cuadrante[3] = matrizCuadrantesNoVisitados[filaCuadrantes][colCuadrantes-1];
+	} else {
+		cuadrante[3] = -1;
+	}
+	if (colCuadrantes < num_cuadrantes) {
+		cuadrante[4] = matrizCuadrantesNoVisitados[filaCuadrantes][colCuadrantes+1];
+	} else {
+		cuadrante[4] = -1;
+	}
+	if (filaCuadrantes < num_cuadrantes && colCuadrantes > 0) {
+		cuadrante[5] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes-1];
+	} else {
+		cuadrante[5] = -1;
+	}
+	if (filaCuadrantes < num_cuadrantes) {
+		cuadrante[6] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes];
+	} else {
+		cuadrante[6] = -1;
+	}
+	if (filaCuadrantes < num_cuadrantes && colCuadrantes < num_cuadrantes) {
+		cuadrante[7] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes+1];
+	} else {
+		cuadrante[7] = -1;
+	}
+
+	// Ahora que sabemos el número de casillas desconocidas de los cuadrantes contiguos, decidimos cuál nos interesa más 
+	// para orientar más tarde el agente hacia el mismo.
+	/**
+	 * @brief Sabemos que:
+	 * [0] --> noroeste
+	 * [1] --> norte
+	 * [2] --> noreste
+	 * [3] --> oeste
+	 * [4] --> este
+	 * [5] --> suroeste
+	 * [6] --> sur
+	 * [7] --> sureste
+	 */
+	int cuadranteElegido = -1;
+	int valorCuadranteElegido = 0;
+	for (int i = 0; i < 8; i++) {
+		if (cuadrante[i] == 25) {
+			cuadranteElegido = i;
+			break;
+		} else {
+			if (valorCuadranteElegido < cuadrante[i]) {
+				valorCuadranteElegido = cuadrante[i];
+				cuadranteElegido = i;
+			}
+		}
+	}
+	//cout << "CUADRANTE ELEGIDO: " << cuadranteElegido << endl;
+	if (cuadranteElegido != -1) {
+		cuadranteFijado = true;
+	}
+
+	return cuadranteElegido;
+}
+
+/**
+ * @brief Según el cuadrante al que queramos ir y nuestra orientación determinaremos las accciones para orientarnos hacia el correcto.
+ * 
+ * @param st 
+ * @param accion 
+ * @param cuadranteElegido 
+ */
+void OrientarHaciaCuadrante(state &st, vector<Action> accion, int cuadranteElegido) {
+	switch (cuadranteElegido) {
+		/*case -1:
+			// Este caso significaría que los cuadrantes contiguos ya han sido visitados
+			// Podría idear una función para ir hacia cuadrantes con una proporción muy diferente en el mapa general (cuadrantes más alejados).
+		break;*/
+		case 0: // noroeste
+			// Según la orientación actual, para orientarse hacia algun cuadrante en concreto, deberá de 
+			// hacer unos giros diferentes para orientarse, hacia el cuadrante deseado.
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_SL);
+				break;
+				case noreste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case este:
+					accion.push_back(actTURN_BL);
+				break;
+				case sureste:
+					accion.push_back(actTURN_SR);
+					accion.push_back(actTURN_BR);
+				break;
+				case sur:
+					accion.push_back(actTURN_BR);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case oeste:
+					accion.push_back(actTURN_SR);
+				break;
+			}
+		break;
+		case 1: // norte
+			switch (st.brujula) {
+				case noreste:
+					accion.push_back(actTURN_SL);
+				break;
+				case este:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case sureste:
+					accion.push_back(actTURN_BL);
+				break;
+				case sur:
+					accion.push_back(actTURN_SR);
+					accion.push_back(actTURN_BR);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_BR);
+				break;
+				case oeste:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_SR);
+				break;
+			}
+		break;
+		case 2: // noreste
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_SR);
+				break;
+				case este:
+					accion.push_back(actTURN_SL);
+				break;
+				case sureste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case sur:
+					accion.push_back(actTURN_BL);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_SR);
+				break;
+				case oeste:
+					accion.push_back(actTURN_BR);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+			}
+		break;
+		case 3: // oeste
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case noreste:
+					accion.push_back(actTURN_BL);
+				break;
+				case este:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_SR);
+				break;
+				case sureste:
+					accion.push_back(actTURN_BR);
+				break;
+				case sur:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_SR);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_SL);
+				break;
+			}
+		break;
+		case 4: // este
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case noreste:
+					accion.push_back(actTURN_SR);
+				break;
+				case sureste:
+					accion.push_back(actTURN_SL);
+				break;
+				case sur:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_BL);
+				break;
+				case oeste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_SR);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_BR);
+				break;
+			}
+		break;
+		case 5: // suroeste
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_BL);
+				break;
+				case noreste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_SR);
+				break;
+				case este:
+					accion.push_back(actTURN_BR);
+				break;
+				case sureste:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case sur:
+					accion.push_back(actTURN_SR);
+				break;
+				case oeste:
+					accion.push_back(actTURN_SL);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+			}
+		break;
+		case 6: // sur
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_SR);
+				break;
+				case noreste:
+					accion.push_back(actTURN_BR);
+				break;
+				case este:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case sureste:
+					accion.push_back(actTURN_SR);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_SL);
+				break;
+				case oeste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_BL);
+				break;
+			}
+		break;
+		case 7: // sureste
+			switch (st.brujula) {
+				case norte:
+					accion.push_back(actTURN_BR);
+				break;
+				case noreste:
+					accion.push_back(actTURN_BL);
+					accion.push_back(actTURN_BL);
+				break;
+				case este:
+					accion.push_back(actTURN_SR);
+				break;
+				case sur:
+					accion.push_back(actTURN_SL);
+				break;
+				case suroeste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_BR);
+				break;
+				case oeste:
+					accion.push_back(actTURN_BL);
+				break;
+				case noroeste:
+					accion.push_back(actTURN_BR);
+					accion.push_back(actTURN_SR);
+				break;
+			}
+		break;
+	}
+}
+
+/**
+ * @brief Evaluamos el número de veces que hemos pasado por las casillas 1, 2 y 3, es decir, las contiguas en la vista.
+ * 
+ * @param st 
+ * @param veces 
+ * @param matrizPaso 
+ */
+void VecesPasadasSiguientesCasillas(state &st, int * veces, int ** matrizPaso) {
+	switch(st.brujula) {
+		case norte:
+			try {
+				veces[0] = matrizPaso[st.fil-1][st.col-1];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil-1][st.col];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil-1][st.col+1];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case noreste:
+			try {
+				veces[0] = matrizPaso[st.fil-1][st.col];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil-1][st.col+1];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil][st.col+1];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case este:
+			try {
+				veces[0] = matrizPaso[st.fil-1][st.col+1];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil][st.col+1];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil+1][st.col+1];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case sureste:
+			try {
+				veces[0] = matrizPaso[st.fil][st.col+1];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil+1][st.col+1];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil+1][st.col];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case sur:
+			try {
+				veces[0] = matrizPaso[st.fil+1][st.col+1];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil+1][st.col];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil+1][st.col-1];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case suroeste:
+			try {
+				veces[0] = matrizPaso[st.fil+1][st.col];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil+1][st.col-1];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil][st.col-1];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case oeste:
+			try {
+				veces[0] = matrizPaso[st.fil+1][st.col-1];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil][st.col-1];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil-1][st.col-1];
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+		case noroeste:
+			try {
+				veces[0] = matrizPaso[st.fil][st.col-1];
+			} catch (...) {
+				veces[0] = 1000;
+			}
+			try {
+				veces[1] = matrizPaso[st.fil-1][st.col-1];
+			} catch (...) {
+				veces[1] = 1000;
+			}
+			try {
+			veces[2] = matrizPaso[st.fil-1][st.col];		
+			} catch (...) {
+				veces[2] = 1000;
+			}
+		break;
+	}
+}
+
 Action ComportamientoJugador::think(Sensores sensores){
 
 	int a, b;
@@ -705,7 +1635,9 @@ Action ComportamientoJugador::think(Sensores sensores){
 		}
 	}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// Nos hemos ubicado en el mapa.
 	if ((sensores.terreno[0]=='G' and !bien_situado) || (sensores.nivel == 0 and !bien_situado)){
 		/**
 		 * @brief En este punto estamos ya ubicados, luego los sensores comienzan a funcionar, con lo que tomamos sus valores.
@@ -722,7 +1654,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 		}
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Comprobación de objetos y batería.
 
 	if (sensores.terreno[0] == 'K') {
@@ -735,385 +1667,50 @@ Action ComportamientoJugador::think(Sensores sensores){
 	int punto_bikini = 0;
 	int punto_zapatillas = 0;
 	int punto_recarga = 0;
-	if ((!bikini || !zapatillas) && accion.size() == 0) {
-		for (int i = 1; i < sensores.terreno.size(); i++) {
-			if (sensores.terreno[i] == 'K') {
-				punto_bikini = i;
-			}
-			if (sensores.terreno[i] == 'D') {
-				punto_zapatillas = i;
-			}
-		}
-	}
-	if (sensores.bateria < 3000) {
-		for (int i = 1; i < sensores.terreno.size(); i++) {
-			if (sensores.terreno[i] == 'X') {
-				punto_recarga = i;
-			}
-		}
-	}
+	BuscarCasillasEspeciales(sensores.terreno, accion.size(), bikini, zapatillas, sensores.bateria, punto_bikini, punto_zapatillas, punto_recarga);
 
 	////////////////////////////////////////////////
 
 	if (sensores.bateria < 3000 && punto_recarga != 0 && accion.size() == 0) {
-		switch (punto_recarga) {
-			//// Inicio hacia delante.
-			case 2:
-				accion.push_back(actFORWARD);
-			break;
-			case 6:
-				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 12:
-				// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
-				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			//// Inicio a la derecha
-			case 3:
-				accion.push_back(actTURN_SR);
-				accion.push_back(actFORWARD);
-			break;
-			case 8:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 15:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 7:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 13:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 14:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			///// Inicio a la izquierda
-			case 1:
-				accion.push_back(actTURN_SL);
-				accion.push_back(actFORWARD);
-			break;
-			case 4:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);				
-				}
-			break;
-			case 9:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 5:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 11:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 10:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				}
-			break;
-		}
+		IrHaciaPuntoRecarga(sensores.terreno, accion, punto_recarga);
 	}
 
 	if (!bikini && punto_bikini != 0 && accion.size() == 0) {
-		switch (punto_bikini) {
-			//// Inicio hacia delante.
-			case 2:
-				accion.push_back(actFORWARD);
-			break;
-			case 6:
-				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 12:
-				// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
-				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			//// Inicio a la derecha
-			case 3:
-				accion.push_back(actTURN_SR);
-				accion.push_back(actFORWARD);
-			break;
-			case 8:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 15:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 7:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 13:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 14:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			///// Inicio a la izquierda
-			case 1:
-				accion.push_back(actTURN_SL);
-				accion.push_back(actFORWARD);
-			break;
-			case 4:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);				
-				}
-			break;
-			case 9:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 5:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 11:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 10:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				}
-			break;
-		}
+		IrHaciaPuntoBikini(sensores.terreno, accion, punto_bikini);
 	}
 
 	if (!zapatillas && punto_zapatillas != 0 && accion.size() == 0) {
-		switch (punto_zapatillas) {
-			//// Inicio hacia delante.
-			case 2:
-				accion.push_back(actFORWARD);
-			break;
-			case 6:
-				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 12:
-				// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
-				if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			//// Inicio a la derecha
-			case 3:
-				accion.push_back(actTURN_SR);
-				accion.push_back(actFORWARD);
-			break;
-			case 8:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 15:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 7:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 13:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 14:
-				if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			///// Inicio a la izquierda
-			case 1:
-				accion.push_back(actTURN_SL);
-				accion.push_back(actFORWARD);
-			break;
-			case 4:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);				
-				}
-			break;
-			case 9:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 5:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 11:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actFORWARD);
-				}
-			break;
-			case 10:
-				if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				}
-			break;
-		}
+		IrHaciaPuntoZapatillas(sensores.terreno, accion, punto_zapatillas);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	int veces[3];
 	if (bien_situado){
 
 		PonerTerrenoEnMatriz(sensores.terreno, current_state, mapaResultado);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Cuadrantes 5*5.
+
+		NumDesconocidasPorCuadrante(mapaResultado, matrizCuadrantesNoVisitados, num_cuadrantes);
+		if (accion.size() == 0 && num_avances >= 10) {
+			num_avances = 0;
+			int cuadranteElegido = CuadranteOptimo(current_state, matrizCuadrantesNoVisitados, num_cuadrantes, cuadranteFijado);
+			if (cuadranteFijado) {
+				OrientarHaciaCuadrante(current_state, accion, cuadranteElegido);
+			}
+		}
+		// Con esto podemos ir viendo como se actualiza la matriz de casillas visitadas.
+		/*cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
+		for (int i = 0; i < num_cuadrantes; i++) {
+			for (int j = 0; j < num_cuadrantes; j++) {
+				cout << matrizCuadrantesNoVisitados[i][j] << " ";
+			}
+			cout << endl;
+		}*/
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Voy añadiendo 1 a la matriz de paso cada vez q paso por la misma casilla
 		// Luego buscaré dar prioridad a las casillas no visitadas.
@@ -1125,538 +1722,10 @@ Action ComportamientoJugador::think(Sensores sensores){
 			cout << endl;
 		}
 
-		/*
-		 * Agrupo en cuadrantes de 5*5, ya que son mcm de 30,50, 75 y 100, y en cada agrupación - cuadrante, almaceno el número de  casillas desconocidas '?'
-		 * en una matriz auxiliar, con ello, más tarde redirigiré eventualmente al robot de forma que se oriente a zonas con muchas casillas menos sin visitar.
-		 */
-		int num_desconocidas[num_cuadrantes*num_cuadrantes] = {0};
-		int fila = 0;
-		for (int n = 0; n < num_cuadrantes*num_cuadrantes; n++) {
-			if ((n)%num_cuadrantes == 0 && n > 0 && n+5 < num_cuadrantes*num_cuadrantes) {fila+=5;}
-			for (int i = fila; i < fila + 5; i++) {
-				for (int j = (n%num_cuadrantes)*5; j < ((n%num_cuadrantes)*5) + 5; j++) {
-					if (mapaResultado[i][j] == '?') {
-						num_desconocidas[n]++;
-					}
-				}
-			}
-		}
-
-		int cont = 0;
-		for (int i = 0; i < num_cuadrantes; i++) {
-			for (int j = 0; j < num_cuadrantes; j++) {
-				matrizCuadrantesNoVisitados[i][j] = num_desconocidas[cont];
-				cont++;
-			}
-		}
-
-		if (accion.size() == 0 && num_avances >= 10) {
-			num_avances = 0;
-			// Ahora queremos ver el cuadrante en el que estamos situados en concreto:
-			int filaCuadrantes, colCuadrantes;
-			if (current_state.fil < 5) {
-				filaCuadrantes = 0;
-			} else {
-				filaCuadrantes = (current_state.fil / 5) - 1;
-			}
-			if (current_state.col < 5) {
-				colCuadrantes = 0;
-			} else {
-				colCuadrantes = (current_state.col / 5) - 1;
-			}
-
-			// Una vez sabemos en que cuadrante estamos ubicados, comprobaremos si alguno de los contiguos tiene 
-			// una proporción de muros contiene una proporción mucho mayor de desconocidos.
-			int cuadrante[8] = {0};
-			if (filaCuadrantes > 0 && colCuadrantes > 0) {
-				cuadrante[0] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes-1];
-			} else {
-				cuadrante[0] = -1;
-			}
-			if (filaCuadrantes > 0) {
-				cuadrante[1] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes];
-			} else {
-				cuadrante[1] = -1;
-			}
-			if (filaCuadrantes > 0 && colCuadrantes < num_cuadrantes) {
-				cuadrante[2] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes+1];
-			} else {
-				cuadrante[2] = -1;
-			}
-			if (colCuadrantes > 0) {
-				cuadrante[3] = matrizCuadrantesNoVisitados[filaCuadrantes][colCuadrantes-1];
-			} else {
-				cuadrante[3] = -1;
-			}
-			if (colCuadrantes < num_cuadrantes) {
-				cuadrante[4] = matrizCuadrantesNoVisitados[filaCuadrantes][colCuadrantes+1];
-			} else {
-				cuadrante[4] = -1;
-			}
-			if (filaCuadrantes < num_cuadrantes && colCuadrantes > 0) {
-				cuadrante[5] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes-1];
-			} else {
-				cuadrante[5] = -1;
-			}
-			if (filaCuadrantes < num_cuadrantes) {
-				cuadrante[6] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes];
-			} else {
-				cuadrante[6] = -1;
-			}
-			if (filaCuadrantes < num_cuadrantes && colCuadrantes < num_cuadrantes) {
-				cuadrante[7] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes+1];
-			} else {
-				cuadrante[7] = -1;
-			}
-
-			// Ahora que sabemos el número de casillas desconocidas de los cuadrantes contiguos, decidimos cuál nos interesa más 
-			// para orientar más tarde el agente hacia el mismo.
-			/**
-			 * @brief Sabemos que:
-			 * [0] --> noroeste
-			 * [1] --> norte
-			 * [2] --> noreste
-			 * [3] --> oeste
-			 * [4] --> este
-			 * [5] --> suroeste
-			 * [6] --> sur
-			 * [7] --> sureste
-			 */
-			int cuadranteElegido = -1;
-			int valorCuadranteElegido = 0;
-			for (int i = 0; i < 8; i++) {
-				if (cuadrante[i] == 25) {
-					cuadranteElegido = i;
-					break;
-				} else {
-					if (valorCuadranteElegido < cuadrante[i]) {
-						valorCuadranteElegido = cuadrante[i];
-						cuadranteElegido = i;
-					}
-				}
-			}
-			cout << "CUADRANTE ELEGIDO: " << cuadranteElegido << endl;
-			if (cuadranteElegido != -1) {
-				cuadranteFijado = true;
-			}
-
-			if (cuadranteFijado) {
-				switch (cuadranteElegido) {
-					/*case -1:
-						// Este caso significaría que los cuadrantes contiguos ya han sido visitados
-						// Podría idear una función para ir hacia cuadrantes con una proporción muy diferente en el mapa general (cuadrantes más alejados).
-					break;*/
-					case 0: // noroeste
-						// Según la orientación actual, para orientarse hacia algun cuadrante en concreto, deberá de 
-						// hacer unos giros diferentes para orientarse, hacia el cuadrante deseado.
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_SL);
-							break;
-							case noreste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case este:
-								accion.push_back(actTURN_BL);
-							break;
-							case sureste:
-								accion.push_back(actTURN_SR);
-								accion.push_back(actTURN_BR);
-							break;
-							case sur:
-								accion.push_back(actTURN_BR);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case oeste:
-								accion.push_back(actTURN_SR);
-							break;
-						}
-					break;
-					case 1: // norte
-						switch (current_state.brujula) {
-							case noreste:
-								accion.push_back(actTURN_SL);
-							break;
-							case este:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case sureste:
-								accion.push_back(actTURN_BL);
-							break;
-							case sur:
-								accion.push_back(actTURN_SR);
-								accion.push_back(actTURN_BR);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_BR);
-							break;
-							case oeste:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_SR);
-							break;
-						}
-					break;
-					case 2: // noreste
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_SR);
-							break;
-							case este:
-								accion.push_back(actTURN_SL);
-							break;
-							case sureste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case sur:
-								accion.push_back(actTURN_BL);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_SR);
-							break;
-							case oeste:
-								accion.push_back(actTURN_BR);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-						}
-					break;
-					case 3: // oeste
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case noreste:
-								accion.push_back(actTURN_BL);
-							break;
-							case este:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_SR);
-							break;
-							case sureste:
-								accion.push_back(actTURN_BR);
-							break;
-							case sur:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_SR);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_SL);
-							break;
-						}
-					break;
-					case 4: // este
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case noreste:
-								accion.push_back(actTURN_SR);
-							break;
-							case sureste:
-								accion.push_back(actTURN_SL);
-							break;
-							case sur:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_BL);
-							break;
-							case oeste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_SR);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_BR);
-							break;
-						}
-					break;
-					case 5: // suroeste
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_BL);
-							break;
-							case noreste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_SR);
-							break;
-							case este:
-								accion.push_back(actTURN_BR);
-							break;
-							case sureste:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case sur:
-								accion.push_back(actTURN_SR);
-							break;
-							case oeste:
-								accion.push_back(actTURN_SL);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-						}
-					break;
-					case 6: // sur
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_SR);
-							break;
-							case noreste:
-								accion.push_back(actTURN_BR);
-							break;
-							case este:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case sureste:
-								accion.push_back(actTURN_SR);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_SL);
-							break;
-							case oeste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_BL);
-							break;
-						}
-					break;
-					case 7: // sureste
-						switch (current_state.brujula) {
-							case norte:
-								accion.push_back(actTURN_BR);
-							break;
-							case noreste:
-								accion.push_back(actTURN_BL);
-								accion.push_back(actTURN_BL);
-							break;
-							case este:
-								accion.push_back(actTURN_SR);
-							break;
-							case sur:
-								accion.push_back(actTURN_SL);
-							break;
-							case suroeste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_BR);
-							break;
-							case oeste:
-								accion.push_back(actTURN_BL);
-							break;
-							case noroeste:
-								accion.push_back(actTURN_BR);
-								accion.push_back(actTURN_SR);
-							break;
-						}
-					break;
-				}
-			}
-		}
-
-
-		// Con esto podemos ir viendo como se actualiza la matriz de casillas visitadas.
-		/*cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
-		for (int i = 0; i < num_cuadrantes; i++) {
-			for (int j = 0; j < num_cuadrantes; j++) {
-				cout << matrizCuadrantesNoVisitados[i][j] << " ";
-			}
-			cout << endl;
-		}*/
-	
-	
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		switch(current_state.brujula) {
-			case norte:
-				try {
-					veces[0] = matrizPaso[current_state.fil-1][current_state.col-1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil-1][current_state.col];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil-1][current_state.col+1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case noreste:
-				try {
-					veces[0] = matrizPaso[current_state.fil-1][current_state.col];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil-1][current_state.col+1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil][current_state.col+1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case este:
-				try {
-					veces[0] = matrizPaso[current_state.fil-1][current_state.col+1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil][current_state.col+1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil+1][current_state.col+1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case sureste:
-				try {
-					veces[0] = matrizPaso[current_state.fil][current_state.col+1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil+1][current_state.col+1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil+1][current_state.col];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case sur:
-				try {
-					veces[0] = matrizPaso[current_state.fil+1][current_state.col+1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil+1][current_state.col];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil+1][current_state.col-1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case suroeste:
-				try {
-					veces[0] = matrizPaso[current_state.fil+1][current_state.col];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil+1][current_state.col-1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil][current_state.col-1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case oeste:
-				try {
-					veces[0] = matrizPaso[current_state.fil+1][current_state.col-1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil][current_state.col-1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil-1][current_state.col-1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case noroeste:
-				try {
-					veces[0] = matrizPaso[current_state.fil][current_state.col-1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil-1][current_state.col-1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil-1][current_state.col];		
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-		}
-	/*
-		switch(current_state.brujula) {
-			case norte:
-				veces = matrizPaso[current_state.fil-1][current_state.col];
-			break;
-			case noreste:
-				veces = matrizPaso[current_state.fil-1][current_state.col+1];
-			break;
-			case este:
-				veces = matrizPaso[current_state.fil][current_state.col+1];
-			break;
-			case sureste:
-				veces = matrizPaso[current_state.fil+1][current_state.col+1];
-			break;
-			case sur:
-				veces = matrizPaso[current_state.fil+1][current_state.col];
-			break;
-			case suroeste:
-				veces = matrizPaso[current_state.fil+1][current_state.col-1];
-			break;
-			case oeste:
-				veces = matrizPaso[current_state.fil][current_state.col-1];
-			break;
-			case noroeste:
-				veces = matrizPaso[current_state.fil-1][current_state.col-1];
-			break;
-		}
-	*/
+		VecesPasadasSiguientesCasillas(current_state, veces, matrizPaso);
 	}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (accion.size() == 0) {
 
@@ -1776,7 +1845,7 @@ Action ComportamientoJugador::think(Sensores sensores){
 	if (sensores.superficie[0] == 'l') {
 		bikini = false;
 		zapatillas = false;
-		brujulaDesorientada = 0;
+		brujulaDesorientada = 0; // Reaparecemos mirando el norte.
 		bien_situado = false;
 	}
 	/*if (sensores.colision) {
