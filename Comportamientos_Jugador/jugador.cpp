@@ -2,6 +2,82 @@
 #include <iostream>
 using namespace std;
 
+/**
+ * @brief Actualizamos la posición del agente en el mapaResultado según se va desplazando.
+ * 
+ * @param a 
+ * @param girar_derecha 
+ * @param lastAction 
+ * @param st 
+ */
+void ActualizarMapaResultado(int & a, bool & girar_derecha, Action lastAction, state &st) {
+
+	switch(lastAction) {
+		case actFORWARD:
+			switch(st.brujula) {
+				case norte:
+					st.fil--;
+				break;
+				case noreste:
+					st.fil--;
+					st.col++;
+				break;
+				case este:
+					st.col++;
+				break;
+				case sureste:
+					st.fil++;
+					st.col++;
+				break;
+				case sur:
+					st.fil++;
+				break;
+				case suroeste:
+					st.fil++;
+					st.col--;
+				break;
+				case oeste:
+					st.col--;
+				break;
+				case noroeste:
+					st.fil--;
+					st.col--;
+				break;
+			}
+		break;
+		case actTURN_SL:
+			a = st.brujula;
+			a = (a+7)%8;
+			st.brujula = static_cast<Orientacion>(a);
+			girar_derecha = (rand()%2 ==0);
+		break;
+		case actTURN_SR:
+			a = st.brujula;
+			a = (a+1)%8;
+			st.brujula = static_cast<Orientacion>(a);
+			girar_derecha = (rand()%2 ==0);
+		break;
+		case actTURN_BL:
+			a = st.brujula;
+			a = (a+5)%8;
+			st.brujula = static_cast<Orientacion>(a);
+		break;
+		case actTURN_BR:
+			a = st.brujula;
+			a = (a+3)%8;
+			st.brujula = static_cast<Orientacion>(a);
+		break;
+	}
+
+}
+
+/**
+ * @brief Pintamos en el mapaResultado lo que vamos viendo.
+ * 
+ * @param terreno 
+ * @param st 
+ * @param matriz 
+ */
 void PonerTerrenoEnMatriz(const vector<unsigned char> & terreno, const state &st, vector<vector<unsigned char>> &matriz) {
 
 	int fila = st.fil;
@@ -155,9 +231,425 @@ void PonerTerrenoEnMatriz(const vector<unsigned char> & terreno, const state &st
 	}
 }
 
+/**
+ * @brief Actualizamos la posición y orientación del agente en la matrizDesconocido conforme se va moviendo en el mapaResultado
+ * para poder pintar en las casillas correctas de la misma.
+ * 
+ * @param last_action 
+ * @param filaMatrizDesubicado 
+ * @param colMatrizDesubicado 
+ * @param brujulaDesorientada 
+ * @param b 
+ */
+void ActualizarMatrizDesconocido(Action last_action, int & filaMatrizDesubicado, int & colMatrizDesubicado, int & brujulaDesorientada, int & b) {
+
+	switch(last_action) {
+		case actFORWARD:
+			switch(brujulaDesorientada) {
+				case 0:
+					filaMatrizDesubicado--;
+					//cout << "Avanza hacia el norte" << endl;
+				break;
+				case 1:
+					filaMatrizDesubicado--;
+					colMatrizDesubicado++;
+					//cout << "Avanza hacia el noreste" << endl;
+				break;
+				case 2:
+					colMatrizDesubicado++;
+					//cout << "Avanza hacia el este" << endl;
+				break;
+				case 3:
+					filaMatrizDesubicado++;
+					colMatrizDesubicado++;
+					//cout << "Avanza hacia el sureste" << endl;
+				break;
+				case 4:
+					filaMatrizDesubicado++;
+					//cout << "Avanza hacia el sur" << endl;
+				break;
+				case 5:
+					filaMatrizDesubicado++;
+					colMatrizDesubicado--;
+					//cout << "Avanza hacia el suroeste" << endl;
+				break;
+				case 6:
+					colMatrizDesubicado--;
+					//cout << "Avanza hacia el oeste" << endl;
+				break;
+				case 7:
+					filaMatrizDesubicado--;
+					colMatrizDesubicado--;
+					//cout << "Avanza hacia el noroeste" << endl;
+				break;
+			}
+		break;
+		case actTURN_SL:
+			b = brujulaDesorientada;
+			b = (b+7)%8;
+			brujulaDesorientada = b;
+		break;
+		case actTURN_SR:
+			b = brujulaDesorientada;
+			b = (b+1)%8;
+			brujulaDesorientada = b;
+		break;
+		case actTURN_BL:
+			b = brujulaDesorientada;
+			b = (b+5)%8;
+			brujulaDesorientada = b;
+		break;
+		case actTURN_BR:
+			b = brujulaDesorientada;
+			b = (b+3)%8;
+			brujulaDesorientada = b;
+		break;
+	}
+
+
+}
+
+/**
+ * @brief Pintamos en la matrizDesconocido lo que vamos viendo.
+ * 
+ * @param terreno 
+ * @param matrizDesubicado 
+ * @param filaMatrizDesubicado 
+ * @param colMatrizDesubicado 
+ * @param brujulaDesorientada 
+ */
+void PonerTerrenoEnMatrizDesconocido(const vector<unsigned char> & terreno, char ** matrizDesubicado, int & filaMatrizDesubicado, int & colMatrizDesubicado, int & brujulaDesorientada) {
+
+	switch(brujulaDesorientada) {
+		case 0: //Norte
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-1] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+1] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-2] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-1] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+1] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+2] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = terreno[15];
+			cout << "Esta mirando hacia 0" << endl;
+		break;
+		case 1: //Noreste
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+1] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+2] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+1] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+2] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+3] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+3] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = terreno[15];
+			cout << "Esta mirando hacia 1" << endl;
+		break;
+		case 2: //Este
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+2] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+2] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+3] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+3] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+3] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+3] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = terreno[15];
+			cout << "Esta mirando hacia 2" << endl;
+		break;
+		case 3: //sureste
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+2] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+1] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+3] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+3] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+2] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+1] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = terreno[15];
+			cout << "Esta mirando hacia 3" << endl;
+		break;
+		case 4: //sur
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+1] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-1] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+2] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+1] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-1] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-2] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = terreno[15];
+			cout << "Esta mirando hacia 4" << endl;
+		break;
+		case 5: //suroeste
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-1] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-2] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-1] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-2] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-3] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-3] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = terreno[15];
+			cout << "Esta mirando hacia 5" << endl;
+		break;
+		case 6: //oeste
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-2] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-2] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-3] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-3] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-3] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-3] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = terreno[15];
+			cout << "Esta mirando hacia 6" << endl;
+		break;
+		case 7: //noroeste
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = terreno[0];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = terreno[1];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = terreno[2];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = terreno[3];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = terreno[4];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-2] = terreno[5];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = terreno[6];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-1] = terreno[7];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = terreno[8];
+			matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = terreno[9];
+			matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-3] = terreno[10];
+			matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-3] = terreno[11];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = terreno[12];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-2] = terreno[13];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-1] = terreno[14];
+			matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = terreno[15];
+			cout << "Esta mirando hacia 7" << endl;
+		break;
+	}
+	
+}
+
+/**
+ * @brief Comprueba si hay alguna casilla de ubicación dentro de la vista del agente.
+ * 
+ * @param terreno 
+ * @return int 
+ */
+int BuscarPuntoUbicacion(const vector<unsigned char> & terreno) {
+	int punto_ubicacion = 0;
+	for (int i = 0; i < terreno.size(); i++) {
+		if (terreno[i] == 'G') {
+			punto_ubicacion = i;
+		}
+	}
+	return punto_ubicacion;
+}
+
+/**
+ * @brief Se define el comportamiento del agente para ir hacia el punto que hará que se ubique en el mapaResultado.
+ * 
+ * @param terreno 
+ * @param accion 
+ * @param punto_ubicacion 
+ */
+void IrHaciaPuntoUbicacion(const vector<unsigned char> & terreno, vector<Action> accion, const int punto_ubicacion) {
+	
+	switch (punto_ubicacion) {
+		//// Inicio hacia delante.
+		case 2:
+			accion.push_back(actFORWARD);
+		break;
+		case 6:
+			if (terreno[2] != 'M' && terreno[2] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 12:
+			// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
+			if (terreno[2] != 'M' && terreno[2] != 'P' && terreno[6] != 'M' && terreno[6] != 'P') {
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		//// Inicio a la derecha
+		case 3:
+			accion.push_back(actTURN_SR);
+			accion.push_back(actFORWARD);
+		break;
+		case 8:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 15:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[8] != 'M' && terreno[8] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 7:
+			if (terreno[3] != 'M' && terreno[3] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 13:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 14:
+			if (terreno[3] != 'M' && terreno[3] != 'P' && terreno[7] != 'M' && terreno[7] != 'P') {
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		///// Inicio a la izquierda
+		case 1:
+			accion.push_back(actTURN_SL);
+			accion.push_back(actFORWARD);
+		break;
+		case 4:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);				
+			}
+		break;
+		case 9:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[4] != 'M' && terreno[4] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 5:
+			if (terreno[1] != 'M' && terreno[1] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 11:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actFORWARD);
+			}
+		break;
+		case 10:
+			if (terreno[1] != 'M' && terreno[1] != 'P' && terreno[5] != 'M' && terreno[5] != 'P') {
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SR);
+				accion.push_back(actFORWARD);
+				accion.push_back(actTURN_SL);
+				accion.push_back(actFORWARD);
+			}
+		break;
+	}
+}
+
+/**
+ * @brief En el momento que estamos ubicados esta función pasa lo de nuestra matriz auxiliar, matrizDesubicado, que ha guardado el terreno 
+ * antes de ubicarse a nuestra matriz mapaResultado.
+ * 
+ * @param mapaResultado 
+ * @param matrizDesubicado 
+ * @param fila_inicial_traspaso 
+ * @param col_inicial_traspaso 
+ */
+void TraspasarDesconocidoAMapa(vector<vector<unsigned char>> &mapaResultado, char ** matrizDesubicado, int fila_inicial_traspaso, int col_inicial_traspaso) {
+	int cont_fila = 0, cont_col = 0;
+	for (int i = fila_inicial_traspaso; i < fila_inicial_traspaso + mapaResultado.size(); i++){
+		for (int j = col_inicial_traspaso; j < col_inicial_traspaso + mapaResultado.size(); j++){
+			if (matrizDesubicado[i][j] != '?') {
+				mapaResultado[cont_fila][cont_col] = matrizDesubicado[i][j];
+			}
+			cont_col++;
+		}
+		cont_col = 0;
+		cont_fila++;
+	}
+	// Borramos la matriz auxiliar por si perdemos la orientación y tenemos que volver a utilizarla
+	for (int i = 0; i < mapaResultado.size()*2 + 1; i++){
+		for (int j = 0; j < mapaResultado.size()*2 + 1; j++){
+			matrizDesubicado[i][j] = '?';
+		}
+	}
+}
+
 Action ComportamientoJugador::think(Sensores sensores){
 
-	int a;
+	int a, b;
 
 	cout << "Posicion: fila " << sensores.posF << " columna " << sensores.posC << " ";
 	switch(sensores.sentido){
@@ -185,428 +677,39 @@ Action ComportamientoJugador::think(Sensores sensores){
 	cout << "Vida: " << sensores.vida << endl;
 	cout << endl;
 
-	//Actualizacion
+	//ACTUALIZACIÓN.
 
-	switch(last_action) {
-		case actFORWARD:
-			switch(current_state.brujula) {
-				case norte:
-					current_state.fil--;
-				break;
-				case noreste:
-					current_state.fil--;
-					current_state.col++;
-				break;
-				case este:
-					current_state.col++;
-				break;
-				case sureste:
-					current_state.fil++;
-					current_state.col++;
-				break;
-				case sur:
-					current_state.fil++;
-				break;
-				case suroeste:
-					current_state.fil++;
-					current_state.col--;
-				break;
-				case oeste:
-					current_state.col--;
-				break;
-				case noroeste:
-					current_state.fil--;
-					current_state.col--;
-				break;
-			}
-		break;
-		case actTURN_SL:
-			a = current_state.brujula;
-			a = (a+7)%8;
-			current_state.brujula = static_cast<Orientacion>(a);
-			girar_derecha = (rand()%2 ==0);
-		break;
-		case actTURN_SR:
-			a = current_state.brujula;
-			a = (a+1)%8;
-			current_state.brujula = static_cast<Orientacion>(a);
-			girar_derecha = (rand()%2 ==0);
-		break;
-		case actTURN_BL:
-			a = current_state.brujula;
-			a = (a+5)%8;
-			current_state.brujula = static_cast<Orientacion>(a);
-		break;
-		case actTURN_BR:
-			a = current_state.brujula;
-			a = (a+3)%8;
-			current_state.brujula = static_cast<Orientacion>(a);
-		break;
-	}
+	ActualizarMapaResultado(a, girar_derecha ,last_action, current_state);
 
-		///////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////
+	/**
+	 * @brief En caso de estar en un nivel superior al 0 como comenzamos sin conocer la orientación ni la posición
+	 * Iremos guardando en una matriz auxiliar de tamaño size*2 + 1 lo que vayamos viendo, de forma que cuando nos 
+	 * ubiquemos pasemos esta información a nuestro mapaResultado.
+	 * 
+	 */
 	if (!bien_situado) {
-
-		//////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////
-			switch(last_action) {
-				case actFORWARD:
-					switch(brujulaDesorientada) {
-						case 0:
-							filaMatrizDesubicado--;
-							cout << "Avanza hacia el norte" << endl;
-						break;
-						case 1:
-							filaMatrizDesubicado--;
-							colMatrizDesubicado++;
-							cout << "Avanza hacia el noreste" << endl;
-						break;
-						case 2:
-							colMatrizDesubicado++;
-							cout << "Avanza hacia el este" << endl;
-						break;
-						case 3:
-							filaMatrizDesubicado++;
-							colMatrizDesubicado++;
-							cout << "Avanza hacia el sureste" << endl;
-						break;
-						case 4:
-							filaMatrizDesubicado++;
-							cout << "Avanza hacia el sur" << endl;
-						break;
-						case 5:
-							filaMatrizDesubicado++;
-							colMatrizDesubicado--;
-							cout << "Avanza hacia el suroeste" << endl;
-						break;
-						case 6:
-							colMatrizDesubicado--;
-							cout << "Avanza hacia el oeste" << endl;
-						break;
-						case 7:
-							filaMatrizDesubicado--;
-							colMatrizDesubicado--;
-							cout << "Avanza hacia el noroeste" << endl;
-						break;
-					}
-				break;
-				case actTURN_SL:
-					a = brujulaDesorientada;
-					a = (a+7)%8;
-					brujulaDesorientada = a;
-				break;
-				case actTURN_SR:
-					a = brujulaDesorientada;
-					a = (a+1)%8;
-					brujulaDesorientada = a;
-				break;
-				case actTURN_BL:
-					a = brujulaDesorientada;
-					a = (a+5)%8;
-					brujulaDesorientada = a;
-				break;
-				case actTURN_BR:
-					a = brujulaDesorientada;
-					a = (a+3)%8;
-					brujulaDesorientada = a;
-				break;
-			}
-
-		/////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////
-
-		switch(brujulaDesorientada) {
-			case 0: //Norte
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-1] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+1] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-2] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-1] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+1] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+2] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = sensores.terreno[15];
-				cout << "Esta mirando hacia 0" << endl;
-			break;
-			case 1: //Noreste
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+1] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+2] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+1] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+2] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+3] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+3] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = sensores.terreno[15];
-				cout << "Esta mirando hacia 1" << endl;
-			break;
-			case 2: //Este
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+1] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+2] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+2] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+2] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado+3] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado+3] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado+3] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+3] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+3] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = sensores.terreno[15];
-				cout << "Esta mirando hacia 2" << endl;
-			break;
-			case 3: //sureste
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+1] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+2] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+2] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+1] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado+3] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+3] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+3] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+2] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+1] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = sensores.terreno[15];
-				cout << "Esta mirando hacia 3" << endl;
-			break;
-			case 4: //sur
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado+1] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+2] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado+1] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-1] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+3] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+2] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado+1] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-1] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-2] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = sensores.terreno[15];
-				cout << "Esta mirando hacia 4" << endl;
-			break;
-			case 5: //suroeste
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-1] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-2] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-1] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-2] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-3] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-3] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = sensores.terreno[15];
-				cout << "Esta mirando hacia 5" << endl;
-			break;
-			case 6: //oeste
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-1] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-2] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-2] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-2] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado+3][colMatrizDesubicado-3] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado+2][colMatrizDesubicado-3] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado+1][colMatrizDesubicado-3] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-3] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-3] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = sensores.terreno[15];
-				cout << "Esta mirando hacia 6" << endl;
-			break;
-			case 7: //noroeste
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado] = sensores.terreno[0];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-1] = sensores.terreno[1];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-1] = sensores.terreno[2];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado] = sensores.terreno[3];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-2] = sensores.terreno[4];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-2] = sensores.terreno[5];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-2] = sensores.terreno[6];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-1] = sensores.terreno[7];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado] = sensores.terreno[8];
-				matrizDesubicado[filaMatrizDesubicado][colMatrizDesubicado-3] = sensores.terreno[9];
-				matrizDesubicado[filaMatrizDesubicado-1][colMatrizDesubicado-3] = sensores.terreno[10];
-				matrizDesubicado[filaMatrizDesubicado-2][colMatrizDesubicado-3] = sensores.terreno[11];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-3] = sensores.terreno[12];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-2] = sensores.terreno[13];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado-1] = sensores.terreno[14];
-				matrizDesubicado[filaMatrizDesubicado-3][colMatrizDesubicado] = sensores.terreno[15];
-				cout << "Esta mirando hacia 7" << endl;
-			break;
-		}
+		ActualizarMatrizDesconocido(last_action, filaMatrizDesubicado, colMatrizDesubicado, brujulaDesorientada, b);
+		PonerTerrenoEnMatrizDesconocido(sensores.terreno, matrizDesubicado, filaMatrizDesubicado, colMatrizDesubicado, brujulaDesorientada);
 	}
-	///////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////
-	accion.erase(accion.begin()); // Borramos la accion que se ha realizado.
 
-	//Decisiones
+	// Elminamos de nuestro vector de acciones la acción que ya ha llevado a cabo el agente.
+	accion.erase(accion.begin());
+
+	//DECISIONES.
 	
 	// A partir de nivel 1, buscar ubicarse en el mapa.
-	int punto_ubicacion;
 	if (sensores.nivel != 0 && !bien_situado && accion.size() == 0) {
-		for (int i = 0; i < sensores.terreno.size(); i++) {
-			if (sensores.terreno[i] == 'G') {
-				punto_ubicacion = i;
-			}
-		}
-
+		int punto_ubicacion = BuscarPuntoUbicacion(sensores.terreno);
 		if (punto_ubicacion != 0) {
-			switch (punto_ubicacion) {
-				//// Inicio hacia delante.
-				case 2:
-					accion.push_back(actFORWARD);
-				break;
-				case 6:
-					if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P') {
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 12:
-					// NOTA: PODRÍA PONER DIFERENTES CAMINOS --> TODAS LAS CASUÍSTICAS.
-					if (sensores.terreno[2] != 'M' && sensores.terreno[2] != 'P' && sensores.terreno[6] != 'M' && sensores.terreno[6] != 'P') {
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				//// Inicio a la derecha
-				case 3:
-					accion.push_back(actTURN_SR);
-					accion.push_back(actFORWARD);
-				break;
-				case 8:
-					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 15:
-					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[8] != 'M' && sensores.terreno[8] != 'P') {
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 7:
-					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P') {
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 13:
-					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 14:
-					if (sensores.terreno[3] != 'M' && sensores.terreno[3] != 'P' && sensores.terreno[7] != 'M' && sensores.terreno[7] != 'P') {
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				///// Inicio a la izquierda
-				case 1:
-					accion.push_back(actTURN_SL);
-					accion.push_back(actFORWARD);
-				break;
-				case 4:
-					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);				
-					}
-				break;
-				case 9:
-					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[4] != 'M' && sensores.terreno[4] != 'P') {
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 5:
-					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P') {
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 11:
-					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actFORWARD);
-					}
-				break;
-				case 10:
-					if (sensores.terreno[1] != 'M' && sensores.terreno[1] != 'P' && sensores.terreno[5] != 'M' && sensores.terreno[5] != 'P') {
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SR);
-						accion.push_back(actFORWARD);
-						accion.push_back(actTURN_SL);
-						accion.push_back(actFORWARD);
-					}
-				break;
-			}
-
+			IrHaciaPuntoUbicacion(sensores.terreno, accion, punto_ubicacion);
 		}
 	}
 
 
 	if ((sensores.terreno[0]=='G' and !bien_situado) || (sensores.nivel == 0 and !bien_situado)){
+		/**
+		 * @brief En este punto estamos ya ubicados, luego los sensores comienzan a funcionar, con lo que tomamos sus valores.
+		 */
 		current_state.fil = sensores.posF;
 		current_state.col= sensores.posC;
 		current_state.brujula = sensores.sentido;
@@ -615,211 +718,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 		if (sensores.nivel > 0) {
 			int fila_inicial_traspaso = filaMatrizDesubicado - current_state.fil;
 			int col_inicial_traspaso = colMatrizDesubicado - current_state.col;
-			int cont_fila = 0, cont_col = 0;
-			for (int i = fila_inicial_traspaso; i < fila_inicial_traspaso + mapaResultado.size(); i++){
-				for (int j = col_inicial_traspaso; j < col_inicial_traspaso + mapaResultado.size(); j++){
-					if (matrizDesubicado[i][j] != '?') {
-						mapaResultado[cont_fila][cont_col] = matrizDesubicado[i][j];
-					}
-					cont_col++;
-				}
-				cont_col = 0;
-				cont_fila++;
-			}
-			// Borramos la matriz auxiliar por si perdemos la orientación y tenemos que volver a utilizarla
-			for (int i = 0; i < mapaResultado.size()*2 + 1; i++){
-				for (int j = 0; j < mapaResultado.size()*2 + 1; j++){
-					matrizDesubicado[i][j] = '?';
-				}
-			}
-			brujulaDesorientada = 0;
-			//DUDA: Si perdemos la orientación por morir reaparecemos mirando al norte?
+			TraspasarDesconocidoAMapa(mapaResultado, matrizDesubicado, fila_inicial_traspaso, col_inicial_traspaso);
 		}
-	}
-
-
-	// Voy añadiendo 1 a la matriz de paso cada vez q paso por la misma casilla
-	// Luego buscaré dar prioridad a las casillas no visitadas.
-	if (bien_situado) {
-		matrizPaso[current_state.fil][current_state.col] += 1;
-		for (unsigned int i = 0; i < sensores.terreno.size(); i++) {
-			for (unsigned int j = 0; j < sensores.terreno.size(); j++) {
-				cout << matrizPaso[i][j] << " ";
-			}
-			cout << endl;
-		}
-	}
-
-
-	int veces[3];
-	if (bien_situado){
-		PonerTerrenoEnMatriz(sensores.terreno, current_state, mapaResultado);
-		switch(current_state.brujula) {
-			case norte:
-				try {
-					veces[0] = matrizPaso[current_state.fil-1][current_state.col-1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil-1][current_state.col];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil-1][current_state.col+1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case noreste:
-				try {
-					veces[0] = matrizPaso[current_state.fil-1][current_state.col];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil-1][current_state.col+1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil][current_state.col+1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case este:
-				try {
-					veces[0] = matrizPaso[current_state.fil-1][current_state.col+1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil][current_state.col+1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil+1][current_state.col+1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case sureste:
-				try {
-					veces[0] = matrizPaso[current_state.fil][current_state.col+1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil+1][current_state.col+1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil+1][current_state.col];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case sur:
-				try {
-					veces[0] = matrizPaso[current_state.fil+1][current_state.col+1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil+1][current_state.col];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil+1][current_state.col-1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case suroeste:
-				try {
-					veces[0] = matrizPaso[current_state.fil+1][current_state.col];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil+1][current_state.col-1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil][current_state.col-1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case oeste:
-				try {
-					veces[0] = matrizPaso[current_state.fil+1][current_state.col-1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil][current_state.col-1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil-1][current_state.col-1];
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-			case noroeste:
-				try {
-					veces[0] = matrizPaso[current_state.fil][current_state.col-1];
-				} catch (...) {
-					veces[0] = 1000;
-				}
-				try {
-					veces[1] = matrizPaso[current_state.fil-1][current_state.col-1];
-				} catch (...) {
-					veces[1] = 1000;
-				}
-				try {
-				veces[2] = matrizPaso[current_state.fil-1][current_state.col];		
-				} catch (...) {
-					veces[2] = 1000;
-				}
-			break;
-		}
-	/*
-		switch(current_state.brujula) {
-			case norte:
-				veces = matrizPaso[current_state.fil-1][current_state.col];
-			break;
-			case noreste:
-				veces = matrizPaso[current_state.fil-1][current_state.col+1];
-			break;
-			case este:
-				veces = matrizPaso[current_state.fil][current_state.col+1];
-			break;
-			case sureste:
-				veces = matrizPaso[current_state.fil+1][current_state.col+1];
-			break;
-			case sur:
-				veces = matrizPaso[current_state.fil+1][current_state.col];
-			break;
-			case suroeste:
-				veces = matrizPaso[current_state.fil+1][current_state.col-1];
-			break;
-			case oeste:
-				veces = matrizPaso[current_state.fil][current_state.col-1];
-			break;
-			case noroeste:
-				veces = matrizPaso[current_state.fil-1][current_state.col-1];
-			break;
-		}
-	*/
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1207,43 +1107,556 @@ Action ComportamientoJugador::think(Sensores sensores){
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/*
-	 * Agrupo en cuadrantes de 5*5, ya que son mcm de 30,50, 75 y 100, y en cada agrupación - cuadrante, almaceno el número de  casillas desconocidas '?'
-	 * en una matriz auxiliar, con ello, más tarde redirigiré eventualmente al robot de forma que se oriente a zonas con muchas casillas menos sin visitar.
-	 */
-	int num_desconocidas[num_cuadrantes*num_cuadrantes] = {0};
-	int fila = 0;
-	for (int n = 0; n < num_cuadrantes*num_cuadrantes; n++) {
-		if ((n)%num_cuadrantes == 0 && n > 0 && n+5 < num_cuadrantes*num_cuadrantes) {fila+=5;}
-		for (int i = fila; i < fila + 5; i++) {
-			for (int j = (n%num_cuadrantes)*5; j < ((n%num_cuadrantes)*5) + 5; j++) {
-				//cout << "n: " << n << " i: " << i << " j: " << j << endl;
-				if (mapaResultado[i][j] == '?') {
-					num_desconocidas[n]++;
+
+
+
+	int veces[3];
+	if (bien_situado){
+
+		PonerTerrenoEnMatriz(sensores.terreno, current_state, mapaResultado);
+
+		// Voy añadiendo 1 a la matriz de paso cada vez q paso por la misma casilla
+		// Luego buscaré dar prioridad a las casillas no visitadas.
+		matrizPaso[current_state.fil][current_state.col] += 1;
+		for (unsigned int i = 0; i < sensores.terreno.size(); i++) {
+			for (unsigned int j = 0; j < sensores.terreno.size(); j++) {
+				cout << matrizPaso[i][j] << " ";
+			}
+			cout << endl;
+		}
+
+		/*
+		 * Agrupo en cuadrantes de 5*5, ya que son mcm de 30,50, 75 y 100, y en cada agrupación - cuadrante, almaceno el número de  casillas desconocidas '?'
+		 * en una matriz auxiliar, con ello, más tarde redirigiré eventualmente al robot de forma que se oriente a zonas con muchas casillas menos sin visitar.
+		 */
+		int num_desconocidas[num_cuadrantes*num_cuadrantes] = {0};
+		int fila = 0;
+		for (int n = 0; n < num_cuadrantes*num_cuadrantes; n++) {
+			if ((n)%num_cuadrantes == 0 && n > 0 && n+5 < num_cuadrantes*num_cuadrantes) {fila+=5;}
+			for (int i = fila; i < fila + 5; i++) {
+				for (int j = (n%num_cuadrantes)*5; j < ((n%num_cuadrantes)*5) + 5; j++) {
+					if (mapaResultado[i][j] == '?') {
+						num_desconocidas[n]++;
+					}
 				}
 			}
 		}
-	}
 
-	int cont = 0;
-	for (int i = 0; i < num_cuadrantes; i++) {
-		for (int j = 0; j < num_cuadrantes; j++) {
-			matrizCuadrantesNoVisitados[i][j] = num_desconocidas[cont];
-			cont++;
+		int cont = 0;
+		for (int i = 0; i < num_cuadrantes; i++) {
+			for (int j = 0; j < num_cuadrantes; j++) {
+				matrizCuadrantesNoVisitados[i][j] = num_desconocidas[cont];
+				cont++;
+			}
 		}
-	}
 
-	// Con esto podemos ir viendo como se actualiza la matriz de casillas visitadas.
-	cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
-	for (int i = 0; i < num_cuadrantes; i++) {
-		for (int j = 0; j < num_cuadrantes; j++) {
-			cout << matrizCuadrantesNoVisitados[i][j] << " ";
+		if (accion.size() == 0 && num_avances >= 10) {
+			num_avances = 0;
+			// Ahora queremos ver el cuadrante en el que estamos situados en concreto:
+			int filaCuadrantes, colCuadrantes;
+			if (current_state.fil < 5) {
+				filaCuadrantes = 0;
+			} else {
+				filaCuadrantes = (current_state.fil / 5) - 1;
+			}
+			if (current_state.col < 5) {
+				colCuadrantes = 0;
+			} else {
+				colCuadrantes = (current_state.col / 5) - 1;
+			}
+
+			// Una vez sabemos en que cuadrante estamos ubicados, comprobaremos si alguno de los contiguos tiene 
+			// una proporción de muros contiene una proporción mucho mayor de desconocidos.
+			int cuadrante[8] = {0};
+			if (filaCuadrantes > 0 && colCuadrantes > 0) {
+				cuadrante[0] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes-1];
+			} else {
+				cuadrante[0] = -1;
+			}
+			if (filaCuadrantes > 0) {
+				cuadrante[1] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes];
+			} else {
+				cuadrante[1] = -1;
+			}
+			if (filaCuadrantes > 0 && colCuadrantes < num_cuadrantes) {
+				cuadrante[2] = matrizCuadrantesNoVisitados[filaCuadrantes-1][colCuadrantes+1];
+			} else {
+				cuadrante[2] = -1;
+			}
+			if (colCuadrantes > 0) {
+				cuadrante[3] = matrizCuadrantesNoVisitados[filaCuadrantes][colCuadrantes-1];
+			} else {
+				cuadrante[3] = -1;
+			}
+			if (colCuadrantes < num_cuadrantes) {
+				cuadrante[4] = matrizCuadrantesNoVisitados[filaCuadrantes][colCuadrantes+1];
+			} else {
+				cuadrante[4] = -1;
+			}
+			if (filaCuadrantes < num_cuadrantes && colCuadrantes > 0) {
+				cuadrante[5] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes-1];
+			} else {
+				cuadrante[5] = -1;
+			}
+			if (filaCuadrantes < num_cuadrantes) {
+				cuadrante[6] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes];
+			} else {
+				cuadrante[6] = -1;
+			}
+			if (filaCuadrantes < num_cuadrantes && colCuadrantes < num_cuadrantes) {
+				cuadrante[7] = matrizCuadrantesNoVisitados[filaCuadrantes+1][colCuadrantes+1];
+			} else {
+				cuadrante[7] = -1;
+			}
+
+			// Ahora que sabemos el número de casillas desconocidas de los cuadrantes contiguos, decidimos cuál nos interesa más 
+			// para orientar más tarde el agente hacia el mismo.
+			/**
+			 * @brief Sabemos que:
+			 * [0] --> noroeste
+			 * [1] --> norte
+			 * [2] --> noreste
+			 * [3] --> oeste
+			 * [4] --> este
+			 * [5] --> suroeste
+			 * [6] --> sur
+			 * [7] --> sureste
+			 */
+			int cuadranteElegido = -1;
+			int valorCuadranteElegido = 0;
+			for (int i = 0; i < 8; i++) {
+				if (cuadrante[i] == 25) {
+					cuadranteElegido = i;
+					break;
+				} else {
+					if (valorCuadranteElegido < cuadrante[i]) {
+						valorCuadranteElegido = cuadrante[i];
+						cuadranteElegido = i;
+					}
+				}
+			}
+			cout << "CUADRANTE ELEGIDO: " << cuadranteElegido << endl;
+			if (cuadranteElegido != -1) {
+				cuadranteFijado = true;
+			}
+
+			if (cuadranteFijado) {
+				switch (cuadranteElegido) {
+					/*case -1:
+						// Este caso significaría que los cuadrantes contiguos ya han sido visitados
+						// Podría idear una función para ir hacia cuadrantes con una proporción muy diferente en el mapa general (cuadrantes más alejados).
+					break;*/
+					case 0: // noroeste
+						// Según la orientación actual, para orientarse hacia algun cuadrante en concreto, deberá de 
+						// hacer unos giros diferentes para orientarse, hacia el cuadrante deseado.
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_SL);
+							break;
+							case noreste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case este:
+								accion.push_back(actTURN_BL);
+							break;
+							case sureste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_BR);
+							break;
+							case sur:
+								accion.push_back(actTURN_BR);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case oeste:
+								accion.push_back(actTURN_SR);
+							break;
+						}
+					break;
+					case 1: // norte
+						switch (current_state.brujula) {
+							case noreste:
+								accion.push_back(actTURN_SL);
+							break;
+							case este:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case sureste:
+								accion.push_back(actTURN_BL);
+							break;
+							case sur:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_BR);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_BR);
+							break;
+							case oeste:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_SR);
+							break;
+						}
+					break;
+					case 2: // noreste
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_SR);
+							break;
+							case este:
+								accion.push_back(actTURN_SL);
+							break;
+							case sureste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case sur:
+								accion.push_back(actTURN_BL);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case oeste:
+								accion.push_back(actTURN_BR);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+						}
+					break;
+					case 3: // oeste
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case noreste:
+								accion.push_back(actTURN_BL);
+							break;
+							case este:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case sureste:
+								accion.push_back(actTURN_BR);
+							break;
+							case sur:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_SR);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_SL);
+							break;
+						}
+					break;
+					case 4: // este
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case noreste:
+								accion.push_back(actTURN_SR);
+							break;
+							case sureste:
+								accion.push_back(actTURN_SL);
+							break;
+							case sur:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_BL);
+							break;
+							case oeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_BR);
+							break;
+						}
+					break;
+					case 5: // suroeste
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_BL);
+							break;
+							case noreste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case este:
+								accion.push_back(actTURN_BR);
+							break;
+							case sureste:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case sur:
+								accion.push_back(actTURN_SR);
+							break;
+							case oeste:
+								accion.push_back(actTURN_SL);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+						}
+					break;
+					case 6: // sur
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case noreste:
+								accion.push_back(actTURN_BR);
+							break;
+							case este:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case sureste:
+								accion.push_back(actTURN_SR);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_SL);
+							break;
+							case oeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_BL);
+							break;
+						}
+					break;
+					case 7: // sureste
+						switch (current_state.brujula) {
+							case norte:
+								accion.push_back(actTURN_BR);
+							break;
+							case noreste:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_BL);
+							break;
+							case este:
+								accion.push_back(actTURN_SR);
+							break;
+							case sur:
+								accion.push_back(actTURN_SL);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_BR);
+							break;
+							case oeste:
+								accion.push_back(actTURN_BL);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+						}
+					break;
+				}
+			}
 		}
-		cout << endl;
-	}
+
+
+		// Con esto podemos ir viendo como se actualiza la matriz de casillas visitadas.
+		/*cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
+		for (int i = 0; i < num_cuadrantes; i++) {
+			for (int j = 0; j < num_cuadrantes; j++) {
+				cout << matrizCuadrantesNoVisitados[i][j] << " ";
+			}
+			cout << endl;
+		}*/
+	
 	
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		switch(current_state.brujula) {
+			case norte:
+				try {
+					veces[0] = matrizPaso[current_state.fil-1][current_state.col-1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil-1][current_state.col];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil-1][current_state.col+1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case noreste:
+				try {
+					veces[0] = matrizPaso[current_state.fil-1][current_state.col];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil-1][current_state.col+1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil][current_state.col+1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case este:
+				try {
+					veces[0] = matrizPaso[current_state.fil-1][current_state.col+1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil][current_state.col+1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil+1][current_state.col+1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case sureste:
+				try {
+					veces[0] = matrizPaso[current_state.fil][current_state.col+1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil+1][current_state.col+1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil+1][current_state.col];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case sur:
+				try {
+					veces[0] = matrizPaso[current_state.fil+1][current_state.col+1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil+1][current_state.col];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil+1][current_state.col-1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case suroeste:
+				try {
+					veces[0] = matrizPaso[current_state.fil+1][current_state.col];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil+1][current_state.col-1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil][current_state.col-1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case oeste:
+				try {
+					veces[0] = matrizPaso[current_state.fil+1][current_state.col-1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil][current_state.col-1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil-1][current_state.col-1];
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+			case noroeste:
+				try {
+					veces[0] = matrizPaso[current_state.fil][current_state.col-1];
+				} catch (...) {
+					veces[0] = 1000;
+				}
+				try {
+					veces[1] = matrizPaso[current_state.fil-1][current_state.col-1];
+				} catch (...) {
+					veces[1] = 1000;
+				}
+				try {
+				veces[2] = matrizPaso[current_state.fil-1][current_state.col];		
+				} catch (...) {
+					veces[2] = 1000;
+				}
+			break;
+		}
+	/*
+		switch(current_state.brujula) {
+			case norte:
+				veces = matrizPaso[current_state.fil-1][current_state.col];
+			break;
+			case noreste:
+				veces = matrizPaso[current_state.fil-1][current_state.col+1];
+			break;
+			case este:
+				veces = matrizPaso[current_state.fil][current_state.col+1];
+			break;
+			case sureste:
+				veces = matrizPaso[current_state.fil+1][current_state.col+1];
+			break;
+			case sur:
+				veces = matrizPaso[current_state.fil+1][current_state.col];
+			break;
+			case suroeste:
+				veces = matrizPaso[current_state.fil+1][current_state.col-1];
+			break;
+			case oeste:
+				veces = matrizPaso[current_state.fil][current_state.col-1];
+			break;
+			case noroeste:
+				veces = matrizPaso[current_state.fil-1][current_state.col-1];
+			break;
+		}
+	*/
+	}
 
 	if (accion.size() == 0) {
 
@@ -1341,11 +1754,31 @@ Action ComportamientoJugador::think(Sensores sensores){
 			giros_acumulados = 0;
 		}
  	}
+	if (accion[0] == actFORWARD) {
+		num_avances++;
+	}
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
 	// AÑADIR CONTROL DE CHOQUES O CAIDAS PARA PERDER OBJETOS
+	if (sensores.superficie[2] != '_') {
+		accion.clear();
+		if(!girar_derecha) {
+			accion.push_back(actTURN_SL);
+			girar_derecha = (rand()%2 == 0);
+		}  else {
+			accion.push_back(actTURN_SR);
+			girar_derecha = (rand()%2 == 0);
+			giros_acumulados++;
+		}
+	}
+	if (sensores.superficie[0] == 'l') {
+		bikini = false;
+		zapatillas = false;
+		brujulaDesorientada = 0;
+		bien_situado = false;
+	}
 	/*if (sensores.colision) {
 		if (sensores.superficie[0] == 'a') {
 			accion.push_back(actIDLE);

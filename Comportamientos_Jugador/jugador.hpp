@@ -57,6 +57,8 @@ class ComportamientoJugador : public Comportamiento{
       filaMatrizDesubicado = size;
       colMatrizDesubicado = size;
       brujulaDesorientada = 0;
+      cuadranteFijado = false;
+      num_avances = 0;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -78,7 +80,8 @@ class ComportamientoJugador : public Comportamiento{
   int filaMatrizDesubicado, colMatrizDesubicado, brujulaDesorientada;
   bool bikini, zapatillas;
   vector<Action> accion;
-  int giros_acumulados, num_cuadrantes;
+  int giros_acumulados, num_cuadrantes, num_avances;
+  bool cuadranteFijado;
 };
 
 #endif
