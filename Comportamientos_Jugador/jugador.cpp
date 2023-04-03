@@ -1815,66 +1815,100 @@ Action ComportamientoJugador::think(Sensores sensores){
 		cout << "Ahora mismo estamos en el cuadrante principal: " << filaCuadrantesActual << colCuadrantesActual << "Luego: " << cuadranteActual << endl;
 
 		// Ir hacia aquel que tenga el doble de no visitadas que el resto
+		// POSIBILIDAD DE HACER FORWARD, NS SI GENERARÍA CICLOS.
 		switch (cuadranteActual) {
 			case 0:
 				switch (cuadranteElegido) {
-					case 1:
+					case 1: // Estoy en 0 y quiero orientar hacia 1 --> Luego orientar hacia el este.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_SR);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_BR);
 							break;
 							case este:
+								// Podria meter actForward??
 							break;
 							case sureste:
+								accion.push_back(actTURN_SL);
 							break;
 							case sur:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case suroeste:
+								accion.push_back(actTURN_BL);
 							break;
 							case oeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 						}
 					break;
-					case 2:
+					case 2: // Estoy en 0 y quiero orientar hacia 2 --> Luego orientar hacia el sur.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_BR);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_BL);
 							break;
 							case este:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case sureste:
+								accion.push_back(actTURN_SR);
 							break;
 							case sur:
+								// forward??
 							break;
 							case suroeste:
+								accion.push_back(actTURN_SL);
 							break;
 							case oeste:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 						}
 					break;
-					case 3:
+					case 3: // Estoy en 0 y quiero orientar hacia 3 --> Luego orientar hacia el sureste.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_BR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 							case este:
+								accion.push_back(actTURN_SR);
 							break;
 							case sureste:
+								//actForward??
 							break;
 							case sur:
+								accion.push_back(actTURN_SL);
 							break;
 							case suroeste:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case oeste:
+								accion.push_back(actTURN_BL);
 							break;
 						}
 					break;
@@ -1882,63 +1916,96 @@ Action ComportamientoJugador::think(Sensores sensores){
 			break;
 			case 1:
 				switch (cuadranteElegido) {
-					case 0:
+					case 0:  // Estoy en 1 y quiero orientar hacia 0 --> Luego orientar hacia el oeste.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case noreste:
+								accion.push_back(actTURN_BL);
 							break;
 							case noroeste:
-							break;
-							case este:
-							break;
-							case sureste:
-							break;
-							case sur:
-							break;
-							case suroeste:
+								accion.push_back(actTURN_SL);
 							break;
 							case oeste:
+								// Podria meter actForward??
+							break;
+							case sureste:
+								accion.push_back(actTURN_BR);
+							break;
+							case sur:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_SR);
+							break;
+							case este:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_SL);
 							break;
 						}
 					break;
-					case 2:
+					case 2: // Estoy en 1 y quiero orientar hacia 2 --> Luego orientar hacia el suroeste.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_BL);
 							break;
 							case noreste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case este:
+								accion.push_back(actTURN_BR);
 							break;
 							case sureste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case sur:
+								accion.push_back(actTURN_SR);
 							break;
 							case suroeste:
+								//forward?
 							break;
 							case oeste:
+								accion.push_back(actTURN_SL);
 							break;
 						}
 					break;
-					case 3:
+					case 3: // Estoy en 1 y quiero orientar hacia 3 --> Luego orientar hacia el sur.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_BR);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_BL);
 							break;
 							case este:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case sureste:
+								accion.push_back(actTURN_SR);
 							break;
 							case sur:
+								// forward??
 							break;
 							case suroeste:
+								accion.push_back(actTURN_SL);
 							break;
 							case oeste:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 						}
 					break;
@@ -1946,63 +2013,96 @@ Action ComportamientoJugador::think(Sensores sensores){
 			break;
 			case 2:
 				switch (cuadranteElegido) {
-					case 0:
+					case 0: // Estoy en 2 y quiero orientar hacia 0 --> Luego orientar hacia el norte.
 						switch (current_state.brujula) {
-							case norte:
+							case sur:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_SL);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_SR);
 							break;
 							case este:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case sureste:
+								accion.push_back(actTURN_BL);
 							break;
-							case sur:
+							case norte:
+								// forward??
 							break;
 							case suroeste:
+								accion.push_back(actTURN_BR);
 							break;
 							case oeste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 						}
 					break;
-					case 1:
+					case 1: // Estoy en 2 y quiero orientar hacia 1 --> Luego orientar hacia el noreste.
 						switch (current_state.brujula) {
 							case norte:
-							break;
-							case noreste:
-							break;
-							case noroeste:
-							break;
-							case este:
-							break;
-							case sureste:
-							break;
-							case sur:
+								accion.push_back(actTURN_SR);
 							break;
 							case suroeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case noroeste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
+							break;
+							case este:
+								accion.push_back(actTURN_SL);
+							break;
+							case sureste:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
+							break;
+							case sur:
+								accion.push_back(actTURN_BL);
+							break;
+							case noreste:
+								//forward?
 							break;
 							case oeste:
+								accion.push_back(actTURN_BR);
 							break;
 						}
 					break;
-					case 3:
+					case 3: // Estoy en 2 y quiero orientar hacia 3 --> Luego orientar hacia el este.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_SR);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_BR);
 							break;
 							case este:
+								// Podria meter actForward??
 							break;
 							case sureste:
+								accion.push_back(actTURN_SL);
 							break;
 							case sur:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case suroeste:
+								accion.push_back(actTURN_BL);
 							break;
 							case oeste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 						}
 					break;
@@ -2010,63 +2110,96 @@ Action ComportamientoJugador::think(Sensores sensores){
 			break;
 			case 3:
 				switch (cuadranteElegido) {
-					case 0:
+					case 0: // Estoy en 3 y quiero orientar hacia 0 --> Luego orientar hacia el noroeste.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_SL);
 							break;
 							case noreste:
-							break;
-							case noroeste:
-							break;
-							case este:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case sureste:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
+							break;
+							case este:
+								accion.push_back(actTURN_BL);
+							break;
+							case noroeste:
+								//actForward??
 							break;
 							case sur:
+								accion.push_back(actTURN_BR);
 							break;
 							case suroeste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 							case oeste:
+								accion.push_back(actTURN_SR);
 							break;
 						}
 					break;
-					case 1:
+					case 1: // Estoy en 3 y quiero orientar hacia 1 --> Luego orientar hacia el norte.
 						switch (current_state.brujula) {
-							case norte:
+							case sur:
+								accion.push_back(actTURN_BR);
+								accion.push_back(actTURN_SR);
 							break;
 							case noreste:
+								accion.push_back(actTURN_SL);
 							break;
 							case noroeste:
+								accion.push_back(actTURN_SR);
 							break;
 							case este:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case sureste:
+								accion.push_back(actTURN_BL);
 							break;
-							case sur:
+							case norte:
+								// forward??
 							break;
 							case suroeste:
+								accion.push_back(actTURN_BR);
 							break;
 							case oeste:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
 							break;
 						}
 					break;
-					case 2:
+					case 2: // Estoy en 3 y quiero orientar hacia 2 --> Luego orientar hacia el oeste.
 						switch (current_state.brujula) {
 							case norte:
+								accion.push_back(actTURN_SL);
+								accion.push_back(actTURN_SL);
 							break;
 							case noreste:
+								accion.push_back(actTURN_BL);
 							break;
 							case noroeste:
-							break;
-							case este:
-							break;
-							case sureste:
-							break;
-							case sur:
-							break;
-							case suroeste:
+								accion.push_back(actTURN_SL);
 							break;
 							case oeste:
+								// Podria meter actForward??
+							break;
+							case sureste:
+								accion.push_back(actTURN_BR);
+							break;
+							case sur:
+								accion.push_back(actTURN_SR);
+								accion.push_back(actTURN_SR);
+							break;
+							case suroeste:
+								accion.push_back(actTURN_SR);
+							break;
+							case este:
+								accion.push_back(actTURN_BL);
+								accion.push_back(actTURN_SL);
 							break;
 						}
 					break;
