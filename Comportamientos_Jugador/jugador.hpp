@@ -59,6 +59,7 @@ class ComportamientoJugador : public Comportamiento{
       brujulaDesorientada = 0;
       cuadranteFijado = false;
       num_avances = 0;
+      solventandoAtasco = false;
     }
 
     ComportamientoJugador(const ComportamientoJugador & comport) : Comportamiento(comport){}
@@ -82,6 +83,7 @@ class ComportamientoJugador : public Comportamiento{
   vector<Action> accion;
   int giros_acumulados, num_cuadrantes, num_avances;
   bool cuadranteFijado;
+  bool solventandoAtasco;
 };
 
 #endif
