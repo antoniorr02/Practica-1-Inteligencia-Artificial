@@ -30,6 +30,7 @@ class ComportamientoJugador : public Comportamiento{
           matrizPaso[i][j] = 0;
         }
       }
+      
       num_cuadrantes = size/5;
       matrizCuadrantesNoVisitados = new int*[num_cuadrantes];
       for (int i = 0; i < num_cuadrantes; i++) {
@@ -40,6 +41,17 @@ class ComportamientoJugador : public Comportamiento{
           matrizCuadrantesNoVisitados[i][j] = 0;
         }
       }
+
+      matrizCuadrantesPrincipales = new int*[2];
+      for (int i = 0; i < 2; i++) {
+            matrizCuadrantesPrincipales[i] = new int[2];
+      }
+      for (unsigned int i = 0; i < 2; i++) {
+        for (unsigned int j = 0; j < 2; j++) {
+          matrizCuadrantesPrincipales[i][j] = 0;
+        }
+      }
+
       matrizDesubicado = new char*[(size*2)+1];
       for (int i = 0; i < (size*2)+1; i++) {
             matrizDesubicado[i] = new char[(size*2)+1];
@@ -49,6 +61,7 @@ class ComportamientoJugador : public Comportamiento{
           matrizDesubicado[i][j] = '?';
         }
       }
+      
       bikini = false;
       zapatillas = false;
       accion.push_back(actIDLE);
@@ -77,6 +90,7 @@ class ComportamientoJugador : public Comportamiento{
   bool bien_situado;
   int ** matrizPaso;
   int ** matrizCuadrantesNoVisitados;
+  int ** matrizCuadrantesPrincipales;
   char ** matrizDesubicado;
   int filaMatrizDesubicado, colMatrizDesubicado, brujulaDesorientada;
   bool bikini, zapatillas;

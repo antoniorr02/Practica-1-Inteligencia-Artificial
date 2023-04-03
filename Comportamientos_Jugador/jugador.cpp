@@ -1727,9 +1727,352 @@ Action ComportamientoJugador::think(Sensores sensores){
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Calcular desconocidas por cuadrante
 
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				matrizCuadrantesPrincipales[i][j] = 0;
+			}
+		}
+
+		int fila = 0;
+		int col = 0;
+		for (int i = 0; i < mapaResultado.size(); i++) {
+			for (int j = 0; j < mapaResultado.size(); j++) {
+				if (mapaResultado[i][j] == '?') { matrizCuadrantesPrincipales[fila][col] += 1;}
+				if (j > 0 && j%(int((mapaResultado.size())/2)) == 0) {col ++;}			
+			}
+			col = 0;
+			if (i > 0 && i%(int((mapaResultado.size())/2)) == 0) {fila++;}
+		}
+		cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				cout << matrizCuadrantesPrincipales[i][j] << " ";
+			}
+			cout << endl;
+		}
+
+
 		// Ver si alguno tiene el doble de no visitadas
+		int filaCuadranteAIr = -1;
+		int colCuadranteAIr = -1;
+		int filaCuadranteMenosVisitado = -1;
+		int colCuadranteMenosVisitado = -1;
+		int desconocidas = 0;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				if (matrizCuadrantesPrincipales[i][j] > desconocidas) {
+					desconocidas = matrizCuadrantesPrincipales[i][j];
+					filaCuadranteMenosVisitado = i;
+					colCuadranteMenosVisitado = j;
+				}
+			}
+		}
+		if (filaCuadranteMenosVisitado > 0 && colCuadranteMenosVisitado > 0) {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					if (matrizCuadrantesPrincipales[i][j]*2 < matrizCuadrantesPrincipales[filaCuadranteMenosVisitado][colCuadranteMenosVisitado]) {
+						filaCuadranteAIr = filaCuadranteMenosVisitado;
+						colCuadranteAIr = colCuadranteMenosVisitado;
+					}
+				}
+			}
+		}
+		int cuadranteElegido = -1;
+		if (filaCuadranteAIr == 0 && colCuadranteAIr == 0)
+			cuadranteElegido = 0;
+		else if (filaCuadranteAIr == 0 && colCuadranteAIr == 1)
+			cuadranteElegido = 1;
+		else if (filaCuadranteAIr == 1 && colCuadranteAIr == 0)
+			cuadranteElegido = 2;
+		else if (filaCuadranteAIr == 1 && colCuadranteAIr == 1)
+			cuadranteElegido = 3;
+
+		cout << "Nos interesa ir hacia el cuadrante principal: " << filaCuadranteAIr << colCuadranteAIr << "Luego: " << cuadranteElegido << endl;
+
+		// Ver cuadrante en el que estamos
+		int filaCuadrantesActual, colCuadrantesActual;
+		if (current_state.fil < mapaResultado.size()/2) {
+			filaCuadrantesActual = 0;
+		} else {
+			filaCuadrantesActual = 1;
+		}
+		if (current_state.col < mapaResultado.size()/2) {
+			colCuadrantesActual = 0;
+		} else {
+			colCuadrantesActual = 1;
+		}
+
+		int cuadranteActual = -1;
+		if (filaCuadrantesActual == 0 && colCuadrantesActual == 0)
+			cuadranteActual = 0;
+		else if (filaCuadrantesActual == 0 && colCuadrantesActual == 1)
+			cuadranteActual = 1;
+		else if (filaCuadrantesActual == 1 && colCuadrantesActual == 0)
+			cuadranteActual = 2;
+		else if (filaCuadrantesActual == 1 && colCuadrantesActual == 1)
+			cuadranteActual = 3;
+
+		cout << "Ahora mismo estamos en el cuadrante principal: " << filaCuadrantesActual << colCuadrantesActual << "Luego: " << cuadranteActual << endl;
 
 		// Ir hacia aquel que tenga el doble de no visitadas que el resto
+		switch (cuadranteActual) {
+			case 0:
+				switch (cuadranteElegido) {
+					case 1:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 2:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 3:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+				}
+			break;
+			case 1:
+				switch (cuadranteElegido) {
+					case 0:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 2:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 3:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+				}
+			break;
+			case 2:
+				switch (cuadranteElegido) {
+					case 0:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 1:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 3:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+				}
+			break;
+			case 3:
+				switch (cuadranteElegido) {
+					case 0:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 1:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+					case 2:
+						switch (current_state.brujula) {
+							case norte:
+							break;
+							case noreste:
+							break;
+							case noroeste:
+							break;
+							case este:
+							break;
+							case sureste:
+							break;
+							case sur:
+							break;
+							case suroeste:
+							break;
+							case oeste:
+							break;
+						}
+					break;
+				}
+			break;
+		}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
