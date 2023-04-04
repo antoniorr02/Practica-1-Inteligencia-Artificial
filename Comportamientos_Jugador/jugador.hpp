@@ -70,7 +70,6 @@ class ComportamientoJugador : public Comportamiento{
       filaMatrizDesubicado = size;
       colMatrizDesubicado = size;
       brujulaDesorientada = 0;
-      cuadranteFijado = false;
       num_avances = 0;
       solventandoAtasco = false;
     }
@@ -96,7 +95,6 @@ class ComportamientoJugador : public Comportamiento{
   bool bikini, zapatillas;
   vector<Action> accion;
   int giros_acumulados, num_cuadrantes, num_avances;
-  bool cuadranteFijado;
   bool solventandoAtasco;
 };
 

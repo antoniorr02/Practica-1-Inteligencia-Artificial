@@ -1106,7 +1106,7 @@ void GestionarCuadrantesPrincipales(state &st, vector<Action> &accion, vector<ve
 	if (filaCuadranteMenosVisitado > 0 && colCuadranteMenosVisitado > 0) {
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 2; j++) {
-				if (matrizCuadrantesPrincipales[i][j]*2 < matrizCuadrantesPrincipales[filaCuadranteMenosVisitado][colCuadranteMenosVisitado]) {
+				if (int((matrizCuadrantesPrincipales[i][j]*4)/3) < matrizCuadrantesPrincipales[filaCuadranteMenosVisitado][colCuadranteMenosVisitado]) {
 					filaCuadranteAIr = filaCuadranteMenosVisitado;
 					colCuadranteAIr = colCuadranteMenosVisitado;
 				}
@@ -1610,10 +1610,9 @@ void NumDesconocidasPorCuadrante(vector<vector<unsigned char>> &mapaResultado, i
  * @param st 
  * @param matrizCuadrantesNoVisitados 
  * @param num_cuadrantes 
- * @param cuadranteFijado 
  * @return int 
  */
-int CuadranteOptimo(state &st, int ** matrizCuadrantesNoVisitados, int num_cuadrantes, bool &cuadranteFijado) {
+int CuadranteOptimo(state &st, int ** matrizCuadrantesNoVisitados, int num_cuadrantes) {
 	// Ahora queremos ver el cuadrante en el que estamos situados en concreto:
 	int filaCuadrantes, colCuadrantes;
 	if (st.fil < 5) {
@@ -1697,10 +1696,11 @@ int CuadranteOptimo(state &st, int ** matrizCuadrantesNoVisitados, int num_cuadr
 			}
 		}
 	}
-	//cout << "CUADRANTE ELEGIDO: " << cuadranteElegido << endl;
-	if (cuadranteElegido != -1) {
-		cuadranteFijado = true;
+
+	if (valorCuadranteElegido < 5) {
+		cuadranteElegido = -1;
 	}
+	//cout << "CUADRANTE ELEGIDO: " << cuadranteElegido << endl;
 
 	return cuadranteElegido;
 }
@@ -2229,10 +2229,8 @@ Action ComportamientoJugador::think(Sensores sensores){
 		NumDesconocidasPorCuadrante(mapaResultado, matrizCuadrantesNoVisitados, num_cuadrantes);
 		if (accion.size() == 0 && num_avances >= 10) {
 			num_avances = 0;
-			int cuadranteElegido = CuadranteOptimo(current_state, matrizCuadrantesNoVisitados, num_cuadrantes, cuadranteFijado);
-			if (cuadranteFijado) {
-				OrientarHaciaCuadrante(current_state, accion, cuadranteElegido, mapaResultado, matrizCuadrantesPrincipales);
-			}
+			int cuadranteElegido = CuadranteOptimo(current_state, matrizCuadrantesNoVisitados, num_cuadrantes);
+			OrientarHaciaCuadrante(current_state, accion, cuadranteElegido, mapaResultado, matrizCuadrantesPrincipales);
 		}
 		// Con esto podemos ir viendo como se actualiza la matriz de casillas visitadas.
 		/*cout << "\nEl número de interrogaciones en la matriz completa es de: " << endl;
