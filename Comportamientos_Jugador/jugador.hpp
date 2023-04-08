@@ -1,3 +1,15 @@
+/**
+ * @file jugador.cpp
+ * @author Antonio Rodríguez Rodríguez (antoniorr@correo.ugr.es)
+ * @brief Práctica 1 Inteligencia Artificial
+ * Ingeniería Informática + ADE, Universidad de Granada.
+ * @version 0.1
+ * @date 2023-04-08
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #ifndef COMPORTAMIENTOJUGADOR_H
 #define COMPORTAMIENTOJUGADOR_H
 

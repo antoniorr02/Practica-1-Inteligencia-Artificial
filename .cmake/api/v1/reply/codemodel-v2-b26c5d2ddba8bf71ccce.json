@@ -24,7 +24,7 @@
 					]
 				}
 			],
-			"name" : "",
+			"name" : "Debug",
 			"projects" : 
 			[
 				{
@@ -50,49 +50,49 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "GLUILib::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-GLUILib-63feca8cf131959ab840.json",
+					"jsonFile" : "target-GLUILib-Debug-12d8a2cf62ce4b739f57.json",
 					"name" : "GLUILib",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "comportamientosLib::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-comportamientosLib-a945097079b5521b0420.json",
+					"jsonFile" : "target-comportamientosLib-Debug-907f3f82f97b568c0a20.json",
 					"name" : "comportamientosLib",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "modelosBelkanLib::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-modelosBelkanLib-b7eacb497e0fd99600aa.json",
+					"jsonFile" : "target-modelosBelkanLib-Debug-2d87d6950665c1a08b46.json",
 					"name" : "modelosBelkanLib",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "motorLib::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-motorLib-440164b97f3e1c3b2fce.json",
+					"jsonFile" : "target-motorLib-Debug-468a5d03d0552fa986b4.json",
 					"name" : "motorLib",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "obj3DLib::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-obj3DLib-16f7a31d9c383a508a7b.json",
+					"jsonFile" : "target-obj3DLib-Debug-4d33496b642048c04d48.json",
 					"name" : "obj3DLib",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "practica1::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-practica1-f45335d64d329a9c77fc.json",
+					"jsonFile" : "target-practica1-Debug-1399e80af8014f584b74.json",
 					"name" : "practica1",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "practica1SG::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-practica1SG-e15fdebd9e5d67c1b77c.json",
+					"jsonFile" : "target-practica1SG-Debug-c5cc95cf2c5e3a5d314a.json",
 					"name" : "practica1SG",
 					"projectIndex" : 0
 				}
