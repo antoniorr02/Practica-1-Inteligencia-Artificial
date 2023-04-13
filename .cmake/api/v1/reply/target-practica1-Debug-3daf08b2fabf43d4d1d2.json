@@ -36,6 +36,12 @@
 				"parent" : 0
 			},
 			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 82,
+				"parent" : 0
+			},
+			{
 				"command" : 2,
 				"file" : 0,
 				"line" : 60,
@@ -49,13 +55,13 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -fopenmp -pthread -std=c++11 -g  "
+					"fragment" : " -fopenmp -pthread -std=c++11 -g"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 3,
+					"backtrace" : 4,
 					"path" : "/home/antonio/Documentos/Facultad/Tercero/Informatica/Segundo Cuatri/I.A/Practicas/Practica1-IA/include"
 				}
 			],
@@ -70,7 +76,7 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "motorLib::@6890427a1f51a3e7e1df"
+			"id" : "obj3DLib::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 2,
@@ -78,15 +84,15 @@
 		},
 		{
 			"backtrace" : 2,
-			"id" : "comportamientosLib::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 2,
 			"id" : "modelosBelkanLib::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "obj3DLib::@6890427a1f51a3e7e1df"
+			"id" : "comportamientosLib::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "motorLib::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "practica1::@6890427a1f51a3e7e1df",
@@ -118,14 +124,17 @@
 				"role" : "libraries"
 			},
 			{
+				"backtrace" : 2,
 				"fragment" : "-lpthread",
 				"role" : "libraries"
 			},
 			{
+				"backtrace" : 3,
 				"fragment" : "lib/libGLUILib.a",
 				"role" : "libraries"
 			},
 			{
+				"backtrace" : 3,
 				"fragment" : "lib/libcomportamientosLib.a",
 				"role" : "libraries"
 			},
@@ -139,6 +148,7 @@
 				"role" : "libraries"
 			},
 			{
+				"backtrace" : 2,
 				"fragment" : "-lpthread",
 				"role" : "libraries"
 			},

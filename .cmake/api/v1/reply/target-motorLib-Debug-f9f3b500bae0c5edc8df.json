@@ -50,7 +50,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -fopenmp -pthread -std=c++11 -g  "
+					"fragment" : " -fopenmp -pthread -std=c++11 -g"
 				}
 			],
 			"includes" : 
@@ -76,15 +76,15 @@
 	[
 		{
 			"backtrace" : 2,
+			"id" : "obj3DLib::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
 			"id" : "GLUILib::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 2,
 			"id" : "comportamientosLib::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "obj3DLib::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "motorLib::@6890427a1f51a3e7e1df",
